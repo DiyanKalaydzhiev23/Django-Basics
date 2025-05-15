@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputField = document.getElementById('title-filter');
+            const submitBtn = document.getElementById('submit');
+            let debounceTimeout;
+            
+            inputField.focus();
+            const length = inputField.value.length;
+            inputField.setSelectionRange(length, length);
+            
+            function debounce(func, delay) {
+                return function (...args) {
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = setTimeout(() => func.apply(this, args), delay);
+                }
+            }
+            
+            inputField.addEventListener("input", debounce(function() {
+                submitBtn.click();
+            }, 500));
+        })
+    </script>
+</head>
+<body>
+    <form method="get">
+        <input type="text" id="title-filter" name="title_filter" value="{{ search_title }}" placeholder="Search" />
+        <button id="submit" style="display: none" type="submit">Submit</button>
+    </form>
+    
+    <ul>
+        {% for task in tasks %}
+            <li>{{ task.name }} - {{ task.created_at }}</li>
+        {% empty %}
+            <h1>No tasks</h1>
+        {% endfor %}
+    </ul>
+</body>
+</html>
