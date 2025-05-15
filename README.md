@@ -4,6 +4,9 @@
 
 - [HTTP and Internet](https://forms.gle/SF9gSGPJta1CUkkz6)
 
+---
+
+- [Django Introduction](https://forms.gle/j4t4yWyBXu42a1uu6)
 
 ---
 
@@ -117,5 +120,93 @@
   
 10. MIME (Multi-purpose Internet Mail Extensions)
    - Обяснява типа на данните, които се изпращат и получават
+
+---
+
+
+### 02. Django Introduction
+
+1. Framework - Работна рамка
+   - Следваме определени правила и структури.
+   - Получаваме готови функции
+  
+2.  MVT Pattern
+   - **M**odel **V**iew **T**emplate
+
+3. Структура на Django проект
+   - manage.py - entry point-a за работа с Django, с него изпълняваме command-line операции
+   - projectFolder
+     - settings.py - съдържа настроките на приложението
+     - urls.py - място където дефинираме url-и, които да са достъпни от потребителя
+     - asgi.py - setup за асинхронни заявки
+     - wsgi.py - setup за синхронни заявки
+   - djangoApp - всеки app се грижи за отделна част от нашия проект
+
+
+4. Creation of a django app
+   1. Move app to project directory (Optional)
+   2. Create `urls.py` file
+   3. Register the djagoApp in `settings.py`
+   4. Register the urls in the project
+   
+   ```bash
+      python manage.py runserver
+   ```
+
+5. Databases
+   - За Postgres инсталираме psycopg2
+   - Конфигурираме в `setting.py`
+   - Създаваме база
+   - Създаваме модели в `models.py`
+   - `makemigrations`
+   - `migrate`
+  
+6. Views
+   - Съдържат главната бизнес логика
+   - Function Based View (FBV)
+   - Трябват ни:
+     - Функция, която има един или повече параметри и връща отрговор
+     ```python
+        def index(request):
+           return HttpResponse("Hello world") 
+     ```
+     ```python
+        HttpResponse("Hello world", headers={
+           "Content-Type": "application/json",
+        })
+     ```
+
+7. urls
+   - Създаваме си променлива с име `urlpatterns` в app/urls.py
+   - В нея задаваме на какъв път, какво view да се изпълни
+   ```python
+      from .views import index
+   
+      urlpatterns = (
+         path('home/', index),
+      ) 
+   ```
+   - Добавяме си app/urls в project/urls.py
+   ```python
+       urlpatterns = (  
+          path('admin/', admin.site.urls),
+          path('', include('project_name.app_name.urls')),  
+       )
+   ```
+
+8. Admin Panel
+   - Django пакет
+   - Започнат като third-party пакет и в последствие добавен като официален пакет
+   - /admin/ - за да достъпим админ панела
+   - `createsuperuser`
+   - admin.py - регистрираме моделите, които искаме да могат да се манипулират в админа
+  
+9, Django Template Language (DTL)
+   - Като динамичен HTML
+   - Имаме цикли, ифове
+   - Можем да рендерираме наши стойности
+   - `{{ }}` - интерполация
+   - `{% %}` - template tags
+
 
 ---
