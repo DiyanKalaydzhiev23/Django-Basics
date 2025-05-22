@@ -8,6 +8,8 @@
 
 - [Urls And Views](https://forms.gle/sBKHwZEBTLqYSqABA)
 
+- [Template Basics](https://forms.gle/HcGocE65cPm6BZNH8)
+
 ---
 
 # Plans
@@ -319,6 +321,214 @@
    - return HttpResponseNotFound
    - Постигат един и същ резултат
    - Можем да персонализираме 404 страницата като направум темплейт с име `404.html` 
+
+---
+
+
+
+---
+
+### 04. Template Basics
+
+1. Django Template Language(DTL)
+   - Използваме, за рендерираме информацията от view-тата
+   - Позволява ни да пишем html, които в зависимост от данните да бъде различен
+   - Единствените езици, които Django поддържа out of the box DTL и Jinja2
+   - Има други алтернативи като `Jinja2`
+   - Mожем да рендредираме в html, txt, xml и тн.
+   - С него правим Sever Side Rendering(SSR)
+   - Настройките по подразбиране за DTL можем да намерим в `settings.py`
+   ```python
+      TEMPLATES = [
+          {
+              'BACKEND': 'django.template.backends.django.DjangoTemplates',
+              'DIRS': [BASE_DIR / 'templates']
+              ,
+              'APP_DIRS': True,
+              'OPTIONS': {
+                  'context_processors': [
+                      'django.template.context_processors.debug',
+                      'django.template.context_processors.request',
+                      'django.contrib.auth.context_processors.auth',
+                      'django.contrib.messages.context_processors.messages',
+                  ],
+              },
+          },
+      ]
+   ```
+
+2. Променливи
+   - Попълваме от контекста в `{{ }}`
+   - Имената на променливите трябва да бъдат snake_case само букви и цифри
+   - Достъпване на методи, пропъртита и индекси става чрез .
+   - {{ my_list.1 }}, {{ person.full_name }}, {{ my_object.items }}
+  ```python
+    context = {
+      "person": {
+          "name": "Dido"
+          "age": 20,
+      },
+      "person2": Person(name="Metodi", age="21 "
+     }
+  ```
+
+3. Филтри
+  - Използваме, за да преобразуваме нашите данни в темплейта
+  - Използваме със символа `|` 
+  - Някои филтри имат параметри като тях подаваме с `:` 
+  - Някои built-in филтри
+    - trucatechars:number - маха последните number chars и ги заменя с ...
+    - truncatewords:number
+    - join:seprarator - същото като ''.join(separator) в Python
+    - date:format - форматира датата по желан от нас начин
+    - default:value - какво да се покаже при falsy стойност
+    - add:value - добавя към съществуваща стойност
+    - capfirst - прави първата буква главна
+ - Линк към всички филтри в Django -> [Django Template Filters](https://docs.djangoproject.com/en/5.0/ref/templates/builtins/) 
+
+4. Тагове
+   - Цикли, проверки и други built-in действия.
+   - Таговете, които рендерират html имат затварящи тагове, защото html не зачита whitespace  
+   - url tag - позволява ни да не използваме hardcoded urls
+   - csrf_token - генерира произволен стринг на бек енда, рендерира го във фронт-енд-а и го сравнява като направим заявка, също запазва cookie
+
+  ```html
+   <!-- Example of if, elif, else -->
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}!</p>
+    {% elif user.is_staff %}
+        <p>Welcome, staff member!</p>
+    {% else %}
+        <p>Welcome, guest! Please log in.</p>
+    {% endif %}
+
+    <!-- Handling empty URLs -->
+    {% if url %}
+        <a href="{{ url }}">Visit this link</a>
+    {% else %}
+        <p>No URL provided.</p>
+    {% endif %}
+
+    <!-- Example of cycle -->
+    <ul>
+        {% for item in items %}
+            <li class="{% cycle 'row1' 'row2' %}">{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Example of lorem -->
+    <p>{% lorem 3 p %}</p>
+  ```
+
+5. Static Files
+   - Ресурси, които се зареждат за всеки потребител
+   - Снимки, видеа, икони
+   - SetUp
+     ```python
+        STATIC_URL = "static/"  # BASE URL - място от където достъпваме статичните ресурси
+        STATICFILESDIRS = (
+             BASE_DIR / 'staticfiles',  # create a folder staticfiles, usually on the level of manage. py
+        )  # The place on the filesystem where staticfiles are
+     ```
+   - `https://localhost:8000/static/file.css` - достъпваме файл
+   - `{% static 'PATH/TO/FILE' %} - static тага, заменя STATIC_URL, по този начин, ако той бъде сменен, няма да се налага да го променяме навсякъде
+   - В началото на темплейта добавяме `{% load static %}`, което зарежда статичните файлове
+   - При деплоймънт, django не предоставя статичните файлове, защото пускаме приложението си с gunicorn, които също не се грижи за статичните файлове
+   - Тогава ни трябва още една настройка
+     ```python
+        STATIC_ROOT = BASE_DIR / 'staticfiles_compiled'
+     ```
+   - Изпълняваме командата `collectstatic`, която взима статичните файлове от всички наши и чужди приложения и ги слага на STATIC_ROOT пътя. 
+
+---
+
+---
+
+### Forms Basics
+
+1. Какво са формите
+   - Начин клиента да изпраща данни на съвъра
+   - Пример: search bar-а на Софтуни
+   - Основни параметри на формите
+     - action
+       - подаваме url към, който искаме да се изпратят нашите данни
+       - default value -> current_url
+     - method
+       - подаваме метода, който искаме да има нашата заявка
+       - default value ->  GET 
+       - При GET, информацията от формата се подава като query в url-a
+       - При POST/PUT, информацията се подава като body
+      
+2. Form fields
+   - Формите събират информация от input полетата в себе си
+   - Полетата трябва да имат параметър name, за да можем да ги прочетем от бек енда
+   - Можем да видим пратените данни в payload на request в браузъра 
+  
+3. Input types
+   - email
+   - range
+   - number
+   - text
+   - password
+   - url
+   - hidden
+   - radio
+   - checkbox 
+
+4. Textarea
+   - Input e single-line
+   - ТеxtArea е multi-line
+  
+5. Dropdowns
+   ```html
+      <select>
+         <option value="1">Gaming</option>
+         <option value="2 ">Reading</option>
+      </select>
+   ```
+
+6. Форми в Django
+   - Създаваме ги във `forms.py`
+   ```py
+      class EmployeeForm(forms.Form):
+         first_name = forms.CharField(
+               max_length=35,
+               required=True,
+         )
+   ```
+
+   - В темплейта
+   ```html
+   <form action="{% url 'index' %}" method="post" >
+      {{ employee_form }}
+      {% csrf_token %}
+      <button>Send</button>
+   </form>
+   ```
+
+   - Във view-то
+   ```py
+      def index(request):
+         if request.method == "GET":
+            context = {
+               "employee_form": EmployeeForm,
+            }
+   
+            return render(request, "web/index.html", context)
+         else:
+            print(request.POST)  # get the data but without any validation
+            form = EmployeeForm(request.POST)
+
+            if form.is_valid(): # starts validation process returns boolean
+               print(form.cleaned_data["first_name"])
+               return redirect('index')
+            else:
+               context = {
+                  "employee_form": form,  # подаваме формата с грешките в нея
+               }
+
+               return render(reques t, "web/index.html", context)
+   ```
 
 ---
 
