@@ -1,5 +1,12 @@
 # Django Basics
 
+---
+
+### Wokshops project
+- [Petstagram](https://github.com/DiyanKalaydzhiev23/petstagram-2025)
+
+---
+
 ### Theory Tests
 
 - [HTTP and Internet](https://forms.gle/SF9gSGPJta1CUkkz6)
