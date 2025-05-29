@@ -1,0 +1,18 @@
+{% extends 'common/base.html' %}
+{% load markdown_extras %}
+
+{% block content %}
+    <div class="posts">
+        <div class="post">
+            <h2>{{ post.title|capfirst }}</h2>
+            <div class="icons">
+                <a href="{% url 'edit-post' post.pk %}">Edit</a>
+                <a href="{% url 'delete-post' post.pk %}">Delete</a>
+            </div>
+            <p>{{ post.content|truncatewords:10|markdown }}</p>
+            <div class="post-meta">
+                <span>Post by {{ post.author|default:"Anonymous" }} on {{ post.created_at|date:'d-M-Y' }}</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
