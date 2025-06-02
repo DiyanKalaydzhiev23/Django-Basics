@@ -1,0 +1,25 @@
+{% extends 'common/base.html' %}
+{% load markdown_extras %}
+{% load recent_posts %}
+
+{% block content %}
+    {% include 'common/search-bar.html' %}
+    
+    {% get_recent_posts 5 recent_posts %}
+    
+    <div class="posts">
+        {% for post in recent_posts %}
+            <div class="post">
+                <a class="post-url" href="{% url 'post-details' post.pk %}">
+                    <h2>{{ post.title|capfirst }}</h2>
+                    <p>{{ post.content|truncatewords:10|markdown }}</p>
+                    <div class="post-meta">
+                        <span>Post by {{ post.author|default:"Anonymous" }} on {{ post.created_at|date:'d-M-Y' }}</span>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <h1 class="no-posts">No posts</h1>
+        {% endfor %}
+    </div>
+{% endblock %}

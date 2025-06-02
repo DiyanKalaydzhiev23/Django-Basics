@@ -1,0 +1,24 @@
+{% extends 'common/base.html' %}
+{% load markdown_extras %}
+
+{% block content %}
+    <div class="posts">
+        <div class="post">
+            <div class="header">
+                <h2>{{ post.title|capfirst }}</h2>
+                <div class="icons">
+                    <a href="{% url 'edit-post' post.pk %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="black" class="ai ai-ChatEdit"><path d="M14 19c3.771 0 5.657 0 6.828-1.172C22 16.657 22 14.771 22 11c0-3.771 0-5.657-1.172-6.828C19.657 3 17.771 3 14 3h-4C6.229 3 4.343 3 3.172 4.172 2 5.343 2 7.229 2 11c0 3.771 0 5.657 1.172 6.828.653.654 1.528.943 2.828 1.07"/><path d="M15.207 6.793a1 1 0 0 0-1.418.003l-4.55 4.597a2 2 0 0 0-.54 1.015l-.18.896a1 1 0 0 0 1.177 1.177l.896-.18a2 2 0 0 0 1.015-.54l4.597-4.55a1 1 0 0 0 .003-1.418l-1-1z"/><path d="M12.5 9.5l1 1"/><path d="M14 19c-1.236 0-2.598.5-3.841 1.145-1.998 1.037-2.997 1.556-3.489 1.225-.492-.33-.399-1.355-.212-3.404L6.5 17.5"/></svg>
+                    </a>
+                    <a href="{% url 'delete-post' post.pk %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" style="margin-bottom: 3px; margin-left: 5px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" color="black" stroke-linejoin="round" class="ai ai-TrashCan"><path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z"/><path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z"/><path d="M2 6h20"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+                    </a>
+                </div>
+            </div>
+            <p>{{ post.content|truncatewords:10|markdown }}</p>
+            <div class="post-meta">
+                <span>Post by {{ post.author|default:"Anonymous" }} on {{ post.created_at|date:'d-M-Y' }}</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
