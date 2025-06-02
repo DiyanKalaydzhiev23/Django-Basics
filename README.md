@@ -19,6 +19,8 @@
 
 - [Forms Basics](https://forms.gle/5yoEyfecjhFnwKqEA)
 
+- [Templates Advanced](https://forms.gle/B7UBVNxyNDBhycrQ9)
+
 ---
 
 # Plans
@@ -538,5 +540,134 @@
 
                return render(reques t, "web/index.html", context)
    ```
+
+---
+
+
+### Templates Advanced
+
+1. Template Inheritance
+   - Позолява ни да разширим html файл
+   - Можем да го използваме за персонализирани стилове на всяка страница {% block styles %}{% endblock %} - in header
+   - `base.html`
+   ```html
+   <html>
+      <h1>Hello</h1>
+      {% block content %}
+      {% endblock %}
+   </html>   
+   ```
+
+   - `my-extending-file.html`
+   ```html
+      {% extends 'base.html' %}
+   
+      {% block content %}
+         <p>Extending code</p>
+      {% endblock %}
+   ```
+
+2. Template Including
+   - С цел преизползване на един html на много места, можем да го вместим/инжектираме в друг html файл
+   - `{% include 'reusable-file.html %}`
+   - Можем да подаваме параметри на вмъкнатия темплейт, които да достъпваме както достъпваме данните от контекста
+   - `{% include 'reusable-file.html with name="Hello" %}`
+  
+3. Custom Filters
+   - Създаваме модул в app-а ни, задължително с името `templatetags`
+   - В него създаваме в Python файл, нашия филтър
+   ```py
+      from django import template
+   
+      register = template.Library()
+      
+      @register.filter(name='custom_title')
+      def custom_title(value):
+          """Capitalizes the first letter of each word, except for specified words"""
+          exceptions = ['and', 'or', 'the', 'in', 'on', 'at', 'to', 'with', 'a', 'an']
+          words = value.split()
+          result = []
+          for word in words:
+              if word.lower() in exceptions and len(result) != 0:
+                  result.append(word.lower())
+              else:
+                  result.append(word.capitalize())
+          return ' '.join(result)
+   ```
+   - в html файла трябва да заредим файла с филтъра ни
+   - `{% load my_file_name %}`
+  
+4. Custom Tags
+   - Simple Tag - връща стринг
+  ```py
+   from django import template
+   
+   register = template.Library()
+   
+   @register.simple_tag
+   def simple_tag_example():
+       return "This is a simple tag"
+  ```
+   - Includsion Tag - връща html стринг базаиран на темплейт
+   ```py
+      from django import template
+      
+      register = template.Library()
+      
+      @register.inclusion_tag('user_info.html', takes_context=True)
+      def user_info(context, user, extra_info):
+          return {
+              'user': user,
+              'extra_info': extra_info,
+              'request': context['request']
+          }
+
+      <div class="user-info">
+          <h2>User Information</h2>
+          <p>Username: {{ user.username }}</p>
+          <p>Email: {{ user.email }}</p>
+          <p>Extra Info: {{ extra_info }}</p>
+      </div>
+ 
+      {% load my_tags %}
+      
+      <div>
+          {% user_info user "Additional details about the user" %}
+      </div>
+
+
+   ```
+   - Tag - връща Template Node с render функцията
+   ```py
+
+      # Register an instance of Library to register custom template tags
+      register = template.Library()
+      
+      # Define a custom Node class for the 'uppercase' tag
+      class UppercaseNode(Node):
+          def __init__(self, nodelist):
+              # nodelist is the content between the custom opening and closing tags
+              self.nodelist = nodelist
+      
+          def render(self, context):
+              # Render the content between the tags using the current context
+              output = self.nodelist.render(context)
+              # Convert the rendered content to uppercase before returning it
+              return output.upper()
+      
+      # Register a custom template tag named "uppercase"
+      @register.tag(name="uppercase")
+      def do_uppercase(parser, token):
+          # Parse everything between {% uppercase %} and {% enduppercase %}
+          nodelist = parser.parse(('enduppercase',))
+          # Remove the 'enduppercase' token from the parsing queue
+          parser.delete_first_token()
+          # Return an instance of the custom UppercaseNode with the parsed nodelist
+          return UppercaseNode(nodelist)
+   ```
+
+5. Bootstrap
+   - [Link](https://getbootstrap.com/)
+
 
 ---
