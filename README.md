@@ -21,6 +21,8 @@
 
 - [Templates Advanced](https://forms.gle/B7UBVNxyNDBhycrQ9)
 
+- [Forms Advanced](https://forms.gle/NaT5UwYh1k1exaZb6)
+
 ---
 
 # Plans
@@ -671,3 +673,272 @@
 
 
 ---
+
+
+
+### Forms Advanced
+
+1. Django Validators
+   - Трябва да е callable
+   - Трябва да вдига `ValidationError` при грешка
+   - Можем да ги използваме на няколко места. Пример: във форми и модели
+   - Валидаторите стоят в миграциите, ако изтрием валидатора след makemigrations, миграциите няма да минават
+   - Извикват се автоматично на `full_clean()` 
+   - `full_clean()` се извиква при извикване на `is_valid()` на форма
+   - Хубаво е валидаторите да стоят в модела, защото по този начин имаме една и съща валидация на клиента и на администрацията
+   ```py
+   # validator with func
+   from django.core.exceptions import ValidationError
+
+   def validate_even(value):
+       if value % 2 != 0:
+           raise ValidationError(
+               '%(value)s is not an even number',
+               params={'value': value},
+           )
+   ```
+
+   ```py
+   # validator with class
+   from django.core.exceptions import ValidationError
+   
+   class EvenValidator:
+       def __init__(self, message=None, code=None):
+           self.message = message or '%(value)s is not an even number'
+           self.code = code or 'not_even'
+       
+       def __call__(self, value):
+           if value % 2 != 0:
+               raise ValidationError(
+                   self.message,
+                   code=self.code,
+                   params={'value': value},
+               )
+       
+       def __repr__(self):
+           return f'EvenValidator(message={self.message}, code={self.code})'
+   
+       def deconstruct(self):
+           return (
+               f"{self.__class__.__module__}.{self.__class__.__name__}",
+               [],
+               {'message': self.message, 'code': self.code}
+           )
+   ```
+
+
+2. Modelform factory
+      - Можем да създаваме modelForms със modelform_factory
+      - Позволява ни динамично да създаваме форми
+      - Можем да създаваме различни форми за различните потребители или в зависимост от  някакви променливи
+      ```py
+         PersonForm = modelform_factory(Person, fields=('__all__', ))
+      ```
+
+
+3. Персонализиране на форми
+   - Можем да итерираме през всички полета в `__init__` и да ги направим readonly (това може да бъде направено с миксин)
+   ```py
+   # mixins.py
+
+   class ReadOnlyFieldsMixin:
+       def __init__(self, *args, **kwargs):
+           super().__init__(*args, **kwargs)
+           for field in self.fields.values():
+               field.widget.attrs['readonly'] = True
+
+   ```
+   ```py
+   # forms.py
+
+   from django import forms
+   from .models import Person
+   
+   class PersonForm(forms.ModelForm):
+       class Meta:
+           model = Person
+           fields = ['name', 'age', 'email']
+           
+           labels = {  # custom labels
+               'name': 'Your Name',
+               'age': 'Your Age',
+               'email': 'Your Email',
+           }
+           
+           error_messages = {  # custom error messages
+               'name': {
+                   'required': 'This field is required.',
+                   'max_length': 'Name cannot be longer than 100 characters.',
+                   'unique': 'Should be unique',
+               },
+               'age': {
+                   'required': 'This field is required.',
+                   'invalid': 'Enter a valid age.',
+               },
+               'email': {
+                   'required': 'This field is required.',
+                   'invalid': 'Enter a valid email address.',
+               },
+           }
+
+   ```
+
+   - Можем да правим валидации на формата с методи с име `clean_<fieldname>`
+   ```py
+   # forms.py
+   
+   from django import forms
+   from .models import Person
+   from django.core.exceptions import ValidationError
+   
+   class PersonForm(forms.ModelForm):
+       class Meta:
+           model = Person
+           fields = ['first_name', 'last_name', 'age', 'email']
+           
+   
+       def clean_first_name(self):
+           first_name = self.cleaned_data.get('first_name')
+           if not first_name.isalpha():
+               raise ValidationError('First name should contain only alphabetic characters.')
+           return first_name
+
+   ```
+   - Използваме `clean` метода за логически валидации свързващи няколко полета
+   ```py
+       def clean(self):
+        cleaned_data = super().clean()
+        last_name = cleaned_data.get("last_name")
+        age = cleaned_data.get("age")
+
+        if last_name and last_name.startswith("A"):
+            if age is None or age < 18:
+                raise ValidationError("If your last name starts with 'A', you must be at least 18 years old.")
+        
+        return cleaned_data
+   ```
+
+4. Save method
+   - Метод на ModelForm
+   - Получава един параметър `commit` (по подразбиране True)
+   ```py
+       def save(self, commit=True):
+        # Get the unsaved Person instance
+        person = super().save(commit=False)
+        
+        # Custom logic before saving
+        person.first_name = person.first_name.capitalize()
+        person.last_name = person.last_name.capitalize()
+
+        # Save the instance if commit is True
+        if commit:
+            person.save()
+
+        # Custom logic after saving, e.g., sending a notification
+        # send_notification(person)  # hypothetical function
+
+        return person
+   ```
+
+5. Formsets
+   - Позволява ни да създаваме и обработваме много форми едновременно
+   - Например, ако правим quiz app, всеки въпрос може да е отделна форма
+   ```py
+   AuthorFormSet = modelformset_factory(Author, form=AuthorForm, extra=3)
+   
+   # views.py
+   from django.shortcuts import render, get_object_or_404, redirect
+   from .models import Book, Author
+   from .forms import AuthorFormSet
+   
+   def manage_authors(request, book_id):
+       book = get_object_or_404(Book, id=book_id)
+       if request.method == 'POST':
+           formset = AuthorFormSet(request.POST, queryset=book.authors.all())
+           if formset.is_valid():
+               authors = formset.save(commit=False)
+               for author in authors:
+                   author.book = book
+                   author.save()
+               return redirect('book_detail', book_id=book.id)
+       else:
+           formset = AuthorFormSet(queryset=book.authors.all())
+       return render(request, 'manage_authors.html', {'formset': formset, 'book': book})
+   ```
+
+6. Стилизиране на форми
+   - Визуализация
+   ```py
+      {{ form.as_p }}
+      {{ form.as_ul }}
+      {{ form.as_div }}
+      {{ form.as_table }}
+   ```
+   - Добавяне на css класове
+   ```py
+      self.fields['email'].widget.attrs['class'] = 'my-css-class'
+   ```
+   - Обхождане на форма
+   ```py
+      {% for field in form %}
+                  <div class="form-group">
+                      <label for="{{ field.id_for_label }}">
+                          {{ field.label }}
+                          {% if field.field.required %}*{% endif %}
+                          {# Display field properties for demonstration #}
+                          (Type: {{ field.field.widget.input_type }},
+                           Max Length: {{ field.field.max_length }},
+                           Required: {{ field.field.required }})
+                      </label>
+                      <input 
+                          type="{{ field.field.widget.input_type }}"
+                          name="{{ field.html_name }}"
+                          id="{{ field.id_for_label }}"
+                          class="{{ field.field.widget.attrs.class }}"
+                          placeholder="{{ field.field.widget.attrs.placeholder }}"
+                          maxlength="{{ field.field.max_length }}"
+                          {% if field.value %} value="{{ field.value }}"{% endif %}
+                      >
+                      {# Display errors if any #}
+                      {% if field.errors %}
+                          <div class="error">
+                              {{ f ield.errors }}
+                          </div>
+                      {% endif %}
+                  </div>
+              {% endfor %}
+   ```
+   - Crispy Forms
+     - Дават ни повече контрол върху формите
+     - `pip install django-crispy-forms`
+     - `pip install crispy-bootstrap4`
+     - Добавяме в INSTALLED_APPS под името 'crispy_forms', 'crispy_bootstrap4'
+     - В `settings.py` CRISPY_TEMPLATE_PACK = 'bootstrap4' 
+
+
+7. Работа с медиа файлове
+   - Видеа, снимки, аудио файлове
+   - За да можем да работим с тези файлове ни трябва Pillow
+   ```py
+   # models.py
+
+   class MyModel:
+
+      image_field = models.ImageField(
+         upload_to="/"
+      )
+
+   # settings.py
+   MEDIA_ROOT = (
+      BASE_DIR / 'mediafiles',
+   )
+
+   # views.py
+   ...
+   form = form(request.POST, request.FILES)
+
+   # tempate form param
+   enctype="multipart/form-data"
+   ```
+   
+--- 
