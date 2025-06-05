@@ -1,0 +1,45 @@
+{% load static %}
+{% load markdown_extras %}
+{% load current_time %}
+{% load user_info %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Posts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    {% block styles %}
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% include 'common/nav.html' %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-3">
+                <p>Last refresh: {% current_time %}</p>
+            </div>
+            <div class="col-md-8 py-4">
+                 <div>
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="col-md-2 d-flex justify-content-end p-3">
+                {% user_info request.user %}
+            </div>
+        </div>
+    </div>
+    
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+</body>
+    <script src='https://unpkg.com/akar-icons-fonts'></script>
+</html>
