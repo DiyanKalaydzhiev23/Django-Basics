@@ -1,0 +1,11 @@
+{% extends 'common/base.html' %}
+
+
+{% block content %}
+    <h1 style="color: #405cf5;">Add Post</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button class="button-9">Submit</button>
+    </form>
+{% endblock %}
