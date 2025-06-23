@@ -12,5 +12,6 @@ urlpatterns = [
         path('delete/<int:pk>/', views.DeletePost.as_view(), name='delete-post'),
         path('details/<int:pk>/', views.PostDetails.as_view(), name='post-details'),
     ])),
+    path('unsafe-view/', views.unsafe_view, name='unsafe'),
     path('redirect/', views.MyRedirectView.as_view()),
 ]

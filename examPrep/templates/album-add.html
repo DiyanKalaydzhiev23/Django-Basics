@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+      <!-- Main Content -->
+      <!--Create Page-->
+      <section class="createPage">
+        <form method="post">
+          <fieldset>
+            <legend>Add Album</legend>
+            <div class="container">
+                {{ form }}
+                {% csrf_token %}
+              <button class="add-album" type="submit">Add New Album</button>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+{% endblock %}

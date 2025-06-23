@@ -1,8 +1,9 @@
 from datetime import datetime
 
+from django.db import connection
 from django.db.models import Q
 from django.forms import modelform_factory
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import classonlymethod, method_decorator
@@ -245,3 +246,15 @@ class MyRedirectView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):  # dynamic way
         return reverse('dashboard') + "?query=Django"
+
+
+def unsafe_view(request):
+    user_input = request.GET.get('username')
+    query = f"SELECT * FROM auth_user WHERE username = '{user_input}'"
+
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+    return JsonResponse(data={"data": rows})
+

@@ -8,6 +8,9 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Current time: {{ current_time }}</h1>
+<form action="{% url 'unsafe' %}">
+    <input name="username" placeholder="username">
+    <button>Submit</button>
+</form>
 </body>
 </html>
