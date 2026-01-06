@@ -10,8 +10,6 @@
 
 # Plans
 
----
-
 ### 01. Internet and HTTP
 
 1. Какво е интернет
