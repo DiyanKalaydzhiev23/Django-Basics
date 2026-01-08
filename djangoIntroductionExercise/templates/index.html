@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO app</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'dashboard' %}">Home</a>
+        <a href="{% url 'list-categories' %}">Categories</a>
+    </nav>
+    <form>
+        <input name="q" value="{{ query }}" placeholder="Search Notes">
+    </form>
+    {% for note in notes %}
+        <li>
+            <h2>{{ note.title }}</h2>
+            <p>{{ note.body }}</p>
+            <p>Category: {{ note.category|default:"No category" }}</p>
+        </li>
+    {% empty %}
+        <h1>No notes yet</h1>
+    {% endfor %}
+    <script>
+        (
+            function (){
+                const input = document.querySelector('input[name="q"]');
+                const form = input?.closest('form');
+                
+                if (!form || !input) return;
+
+                const focusInput = () => {
+                    input.focus();
+                    const len = input.value.length;
+                    input.setSelectionRange(len, len);
+                }
+                focusInput();
+                
+                let timer;
+                input.addEventListener('input', () => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => form.requestSubmit(), 300);
+                });
+            }
+        )();
+    </script>
+</body>
+</html>
