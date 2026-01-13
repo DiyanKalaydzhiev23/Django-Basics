@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    <main>
+        <article>
+            <h1>Review for {{ review.destination.name }} from {{ review.author }}</h1>
+            <p>{{ review.body }}</p>
+            <p>Rating: {{ review.rating }}</p>
+            <p>{{ review.created_at }}</p>
+        </article>
+    </main>
+</body>
+</html>
