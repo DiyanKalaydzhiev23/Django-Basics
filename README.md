@@ -8,6 +8,8 @@
 
 - [Django Introduction](https://forms.gle/j4t4yWyBXu42a1uu6)
 
+- [Urls and Views](https://forms.gle/sBKHwZEBTLqYSqABA)
+
 ---
 
 # Plans
@@ -209,4 +211,116 @@
 
 
 ---
+
+### 03. Urls and Views
+
+1. Какво са url-ите в Django?
+   - Всеки url преставлява път, на който зареждаме дадено view
+   - Django ги проверява последователно за съвпадение
+     
+   ```python
+      urlpatterns = [
+         path('index/', index_view),
+         path('index/', index_view_2)  # никога няма да видим index_view_2
+      ]
+   ```
+
+   - В основните urls на проекта ни, трябва да включим тези от всяко наше приложение
+   - Можем да сложим общ prefix, които да седи пред всеки url на даден app
+     
+   ```python
+   urlpatterns = [
+       path('admin/', admin.site.urls),
+       path('departments/', include('departments.urls')),
+   ]
+
+   ```
+
+   - include може да приема списък от paths
+
+2. Динамични url-и
+   - Понякога искаме в url-a да динамична стойност (променяща се, примерно id)
+   ```python
+      path('index/<int:pk> ', index_view),
+   ```
+   - Типове динамични url-и
+     - str
+     - int
+     - slug - string, които не може да има интервали и non-Ascii символи
+     - path - "/some/path" - не бихме имали съвпадение в str, защото Django вижда това като отделни пътища
+     - uuid
+    - re_path
+      - Винаги пишем в raw стринг(стринг, които няма escapes)
+      - В django 2 всеки път е бил с регулярни изрази
+      ```python
+         re_path(r'^article/(?P<year>[0-9]{4})/', view)
+         # matches year and saves it in a variable year
+      ```
+
+3. Views
+   - Function Based Views
+     - Приемат http заявка и връщат http отговор(или негов наследник)
+     - Освен заявката могат да получават други параметри заложени в url-a
+    
+4. Response types
+  - HttpResponse
+    - Обект, който се грижи за това да се сериализира нашият отговор (да се разбие на пакети и тн.)
+    - Можем да му подаваме content (съдържание)
+    - Можем да му подадем status_code
+      ```python
+         return HttpResponse(content="Hi my name is", status=201)
+      ```
+  - JsonResponse
+    ```python
+    content = json.dumps({
+      "name": "Dido",
+      "age": 20
+    })
+
+    return HttpResponse(content=content, content_type="application/json")
+    # or
+    return JsonResponse(content,)
+    ```
+
+5. Django Shortcuts
+   - **render**
+     - Рендерира контекст в html template
+     ```python
+        return render(request, 'core/index.html', context)  # context is optional 
+     ```
+   - **redirect**
+     - Пренасочва ни към друг url
+     - Може да бъде permanent
+       - Когато искаме винаги от тази страница да се пренасочва към друга
+   ```python
+      redirect('https://softuni.bg')  # използваме абсолютен url. защото редиректваме към друго приложение
+      redirect('my_view_name', pk=10)  # използваме име на view-то, за по-добра абстракция 
+   ```
+   - **resolve_url**
+     - Използва url resolver-a на django, за да намери url отговарящ на view или model (ако в модела има get_absolute_url)
+   - get_object_or_404()
+   - get_list_or_404()
+   ```python
+   article =  get_object_or_404(Article, pk=article_id)
+   ```
+   - **reverse**
+     - Получава име на url, търси в регистрираните имена и връща url-а с това име
+   - **reverse_lazy**
+     - Използва се за конвигурация
+     - Зарежда url-а, когато той съществува
+     ```python 
+        # settings.py
+        LOGIN_URL = reverse('index') # throws an error
+        LOGIN_URL = reverse_lazy('index') # throws an error
+     ```
+
+6. Django Errors
+   - raise Http404
+   - return HttpResponseNotFound
+   - Постигат един и същ резултат
+   - Можем да персонализираме 404 страницата като направум темплейт с име `404.html` 
+
+---
+
+
 
