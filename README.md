@@ -491,7 +491,7 @@
    - `{% load my_file_name %}`
   
 9. Custom Tags
-   - Simple Tag - връща стринг
+   - Simple Tag - връща една стойност
   ```py
    from django import template
    
@@ -563,6 +563,7 @@
    - [Link](https://getbootstrap.com/)
 
 ---
+
 
 
 
