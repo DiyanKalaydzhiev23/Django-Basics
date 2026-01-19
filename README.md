@@ -10,6 +10,8 @@
 
 - [Urls and Views](https://forms.gle/sBKHwZEBTLqYSqABA)
 
+- [Templates](https://forms.gle/YFignn8j3QRipiV69)
+
 ---
 
 # Plans
@@ -321,6 +323,247 @@
    - Можем да персонализираме 404 страницата като направум темплейт с име `404.html` 
 
 ---
+
+
+
+### 04. Templates
+
+1. Django Template Language(DTL)
+   - Използваме, за рендерираме информацията от view-тата
+   - Позволява ни да пишем html, които в зависимост от данните да бъде различен
+   - Единствените езици, които Django поддържа out of the box DTL и Jinja2
+   - Има други алтернативи като `Jinja2`
+   - Mожем да рендредираме в html, txt, xml и тн.
+   - С него правим Sever Side Rendering(SSR)
+   - Настройките по подразбиране за DTL можем да намерим в `settings.py`
+   ```python
+      TEMPLATES = [
+          {
+              'BACKEND': 'django.template.backends.django.DjangoTemplates',
+              'DIRS': [BASE_DIR / 'templates']
+              ,
+              'APP_DIRS': True,
+              'OPTIONS': {
+                  'context_processors': [
+                      'django.template.context_processors.debug',
+                      'django.template.context_processors.request',
+                      'django.contrib.auth.context_processors.auth',
+                      'django.contrib.messages.context_processors.messages',
+                  ],
+              },
+          },
+      ]
+   ```
+
+2. Променливи
+   - Попълваме от контекста в `{{ }}`
+   - Имената на променливите трябва да бъдат snake_case само букви и цифри
+   - Достъпване на методи, пропъртита и индекси става чрез .
+   - {{ my_list.1 }}, {{ person.full_name }}, {{ my_object.items }}
+  ```python
+    context = {
+      "person": {
+          "name": "Dido"
+          "age": 20,
+      },
+      "person2": Person(name="Metodi", age="21 "
+     }
+  ```
+
+3. Филтри
+  - Използваме, за да преобразуваме нашите данни в темплейта
+  - Използваме със символа `|` 
+  - Някои филтри имат параметри като тях подаваме с `:` 
+  - Някои built-in филтри
+    - trucatechars:number - маха последните number chars и ги заменя с ...
+    - truncatewords:number
+    - join:seprarator - същото като ''.join(separator) в Python
+    - date:format - форматира датата по желан от нас начин
+    - default:value - какво да се покаже при falsy стойност
+    - add:value - добавя към съществуваща стойност
+    - capfirst - прави първата буква главна
+ - Линк към всички филтри в Django -> [Django Template Filters](https://docs.djangoproject.com/en/5.0/ref/templates/builtins/) 
+
+4. Тагове
+   - Цикли, проверки и други built-in действия.
+   - Таговете, които рендерират html имат затварящи тагове, защото html не зачита whitespace  
+   - url tag - позволява ни да не използваме hardcoded urls
+   - csrf_token - генерира произволен стринг на бек енда, рендерира го във фронт-енд-а и го сравнява като направим заявка, също запазва cookie
+
+  ```html
+   <!-- Example of if, elif, else -->
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}!</p>
+    {% elif user.is_staff %}
+        <p>Welcome, staff member!</p>
+    {% else %}
+        <p>Welcome, guest! Please log in.</p>
+    {% endif %}
+
+    <!-- Handling empty URLs -->
+    {% if url %}
+        <a href="{{ url }}">Visit this link</a>
+    {% else %}
+        <p>No URL provided.</p>
+    {% endif %}
+
+    <!-- Example of cycle -->
+    <ul>
+        {% for item in items %}
+            <li class="{% cycle 'row1' 'row2' %}">{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Example of lorem -->
+    <p>{% lorem 3 p %}</p>
+  ```
+
+5. Static Files
+   - Ресурси, които се зареждат за всеки потребител
+   - Снимки, видеа, икони
+   - SetUp
+     ```python
+        STATIC_URL = "static/"  # BASE URL - място от където достъпваме статичните ресурси
+        STATICFILESDIRS = (
+             BASE_DIR / 'staticfiles',  # create a folder staticfiles, usually on the level of manage. py
+        )  # The place on the filesystem where staticfiles are
+     ```
+   - `https://localhost:8000/static/file.css` - достъпваме файл
+   - `{% static 'PATH/TO/FILE' %} - static тага, заменя STATIC_URL, по този начин, ако той бъде сменен, няма да се налага да го променяме навсякъде
+   - В началото на темплейта добавяме `{% load static %}`, което зарежда статичните файлове
+   - При деплоймънт, django не предоставя статичните файлове, защото пускаме приложението си с gunicorn, които също не се грижи за статичните файлове
+   - Тогава ни трябва още една настройка
+     ```python
+        STATIC_ROOT = BASE_DIR / 'staticfiles_compiled'
+     ```
+   - Изпълняваме командата `collectstatic`, която взима статичните файлове от всички наши и чужди приложения и ги слага на STATIC_ROOT пътя. 
+
+
+6. Template Inheritance
+   - Позолява ни да разширим html файл
+   - Можем да го използваме за персонализирани стилове на всяка страница {% block styles %}{% endblock %} - in header
+   - `base.html`
+   ```html
+   <html>
+      <h1>Hello</h1>
+      {% block content %}
+      {% endblock %}
+   </html>   
+   ```
+
+   - `my-extending-file.html`
+   ```html
+      {% extends 'base.html' %}
+   
+      {% block content %}
+         <p>Extending code</p>
+      {% endblock %}
+   ```
+
+7. Template Including
+   - С цел преизползване на един html на много места, можем да го вместим/инжектираме в друг html файл
+   - `{% include 'reusable-file.html %}`
+   - Можем да подаваме параметри на вмъкнатия темплейт, които да достъпваме както достъпваме данните от контекста
+   - `{% include 'reusable-file.html with name="Hello" %}`
+  
+8. Custom Filters
+   - Създаваме модул в app-а ни, задължително с името `templatetags`
+   - В него създаваме в Python файл, нашия филтър
+   ```py
+      from django import template
+   
+      register = template.Library()
+      
+      @register.filter(name='custom_title')
+      def custom_title(value):
+          """Capitalizes the first letter of each word, except for specified words"""
+          exceptions = ['and', 'or', 'the', 'in', 'on', 'at', 'to', 'with', 'a', 'an']
+          words = value.split()
+          result = []
+          for word in words:
+              if word.lower() in exceptions and len(result) != 0:
+                  result.append(word.lower())
+              else:
+                  result.append(word.capitalize())
+          return ' '.join(result)
+   ```
+   - в html файла трябва да заредим файла с филтъра ни
+   - `{% load my_file_name %}`
+  
+9. Custom Tags
+   - Simple Tag - връща една стойност
+  ```py
+   from django import template
+   
+   register = template.Library()
+   
+   @register.simple_tag
+   def simple_tag_example():
+       return "This is a simple tag"
+  ```
+   - Includsion Tag - връща html стринг базаиран на темплейт
+   ```py
+      from django import template
+      
+      register = template.Library()
+      
+      @register.inclusion_tag('user_info.html', takes_context=True)
+      def user_info(context, user, extra_info):
+          return {
+              'user': user,
+              'extra_info': extra_info,
+              'request': context['request']
+          }
+
+      <div class="user-info">
+          <h2>User Information</h2>
+          <p>Username: {{ user.username }}</p>
+          <p>Email: {{ user.email }}</p>
+          <p>Extra Info: {{ extra_info }}</p>
+      </div>
+ 
+      {% load my_tags %}
+      
+      <div>
+          {% user_info user "Additional details about the user" %}
+      </div>
+
+
+   ```
+   - Tag - връща Template Node с render функцията
+   ```py
+
+      # Register an instance of Library to register custom template tags
+      register = template.Library()
+      
+      # Define a custom Node class for the 'uppercase' tag
+      class UppercaseNode(Node):
+          def __init__(self, nodelist):
+              # nodelist is the content between the custom opening and closing tags
+              self.nodelist = nodelist
+      
+          def render(self, context):
+              # Render the content between the tags using the current context
+              output = self.nodelist.render(context)
+              # Convert the rendered content to uppercase before returning it
+              return output.upper()
+      
+      # Register a custom template tag named "uppercase"
+      @register.tag(name="uppercase")
+      def do_uppercase(parser, token):
+          # Parse everything between {% uppercase %} and {% enduppercase %}
+          nodelist = parser.parse(('enduppercase',))
+          # Remove the 'enduppercase' token from the parsing queue
+          parser.delete_first_token()
+          # Return an instance of the custom UppercaseNode with the parsed nodelist
+          return UppercaseNode(nodelist)
+   ```
+
+10. Bootstrap
+   - [Link](https://getbootstrap.com/)
+
+---
+
 
 
 
