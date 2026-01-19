@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}404 | Page Not Found{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="card text-center p-5">
+        <div class="display-4 fw-bold text-accent mb-2">404</div>
+        <p class="lead text-secondary mb-4">We couldn&apos;t find the page you were looking for.</p>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a href="{% url 'destination:index' %}" class="btn btn-primary">Back to homepage</a>
+            <a href="{% url 'destination:list' %}" class="btn btn-outline-primary">Browse destinations</a>
+            <a href="{% url 'review:list' %}" class="btn btn-outline-secondary">Read reviews</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

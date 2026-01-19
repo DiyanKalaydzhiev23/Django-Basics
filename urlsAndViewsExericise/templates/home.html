@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Travel Explorer{% endblock %}
+
+{% block content %}
+<section class="mb-5">
+    <div class="p-4 p-lg-5 rounded-4 position-relative overflow-hidden" style="background: linear-gradient(120deg, #1b6ca8, #144b78);">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-7 text-white">
+                <p class="text-uppercase fw-semibold small mb-2">Plan your next adventure</p>
+                <h1 class="display-6 fw-bold mb-3">Find destinations, read real reviews, travel smarter.</h1>
+                <p class="lead mb-4">A curated list of cities and experiences paired with traveler insights, all in one place.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-light text-primary" href="{% url 'destination:list' %}">Explore destinations</a>
+                    <a class="btn btn-outline-light" href="{% url 'review:list' %}">Read reviews</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <p class="text-accent fw-semibold mb-2">Why Travel Explorer?</p>
+                        <ul class="list-unstyled mb-0 text-secondary">
+                            <li class="d-flex align-items-start gap-2 mb-2">
+                                <span class="pill flex-shrink-0">1</span>
+                                <div>
+                                    <p class="fw-semibold mb-1">Curated destinations</p>
+                                    <small>Handpicked places with quick highlights to decide faster.</small>
+                                </div>
+                            </li>
+                            <li class="d-flex align-items-start gap-2 mb-2">
+                                <span class="pill flex-shrink-0">2</span>
+                                <div>
+                                    <p class="fw-semibold mb-1">Real traveler reviews</p>
+                                    <small>Recent, honest feedback to set the right expectations.</small>
+                                </div>
+                            </li>
+                            <li class="d-flex align-items-start gap-2">
+                                <span class="pill flex-shrink-0">3</span>
+                                <div>
+                                    <p class="fw-semibold mb-1">Built for focus</p>
+                                    <small>A clean layout so you can stay on the essentials.</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="h4 mb-1">Featured destinations</h2>
+            <p class="text-muted mb-0">Fresh picks to inspire your itinerary.</p>
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'destination:list' %}">See all</a>
+    </div>
+    <div class="row g-4">
+        {% for destination in featured_destinations %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="pill">{{ destination.country|slice:":1" }}</span>
+                            <div class="ms-3">
+                                <p class="text-uppercase text-muted small mb-0">{{ destination.country }}</p>
+                                <h5 class="card-title mb-0">{{ destination.name }}</h5>
+                            </div>
+                        </div>
+                        <p class="text-secondary mb-3">{{ destination.description|truncatewords:22 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ destination.created_at|date:"M j, Y" }}</small>
+                            <a class="btn btn-sm btn-primary" href="{% url 'destination:detail' destination.slug %}">Open</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info mb-0">No destinations to feature yet. Start by adding some!</div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="h4 mb-1">Latest reviews</h2>
+            <p class="text-muted mb-0">Fresh perspectives from travelers.</p>
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'review:list' %}">Browse all reviews</a>
+    </div>
+    <div class="row g-3">
+        {% for review in latest_reviews %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div>
+                                <p class="fw-semibold mb-1">{{ review.author }}</p>
+                                <small class="text-muted">on {{ review.destination.name }}</small>
+                            </div>
+                            <span class="badge text-bg-warning text-dark">★ {{ review.rating }}</span>
+                        </div>
+                        <p class="text-secondary mb-3">{{ review.body|truncatewords:24 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <small class="text-muted">{{ review.created_at|date:"M j, Y" }}</small>
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'review:detail' review.pk %}">Read</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-light border mb-0">No reviews just yet. Check back soon.</div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

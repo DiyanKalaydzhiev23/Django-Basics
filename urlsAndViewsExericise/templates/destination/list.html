@@ -1,22 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ page_title }}</title>
-</head>
-<body>
-    <main>
-        <ul>
-            {% for destination in destinations %}
-                <li>
-                    <a href="{% url 'destination:detail' destination.slug %}">
-                        {{ destination.name }} ({{ destination.country }})
-                    </a>
-                </li>
-            {% empty %}
-                <h1>No destinations.</h1>
-            {% endfor %}
-        </ul>
-    </main>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | Travel Explorer{% endblock %}
+
+{% block content %}
+<section class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+    <div>
+        <p class="text-accent mb-1 text-uppercase fw-bold small">Explore the world</p>
+        <h1 class="h3 mb-1">{{ page_title }}</h1>
+        <p class="text-muted mb-0">Browse vibrant destinations and plan your next escape.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'review:list' %}">See what travelers say</a>
+</section>
+
+<div class="row g-4">
+    {% for destination in destinations %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="pill">{{ destination.country|slice:":1" }}</span>
+                        <div class="ms-3">
+                            <h5 class="card-title mb-0">{{ destination.name }}</h5>
+                            <small class="text-muted">{{ destination.country }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text text-secondary">{{ destination.description|truncatewords:24 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Added {{ destination.created_at|date:"M j, Y" }}</small>
+                        <a class="btn btn-sm btn-primary" href="{% url 'destination:detail' destination.slug %}">View details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info mb-0">No destinations yet. Check back soon!</div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

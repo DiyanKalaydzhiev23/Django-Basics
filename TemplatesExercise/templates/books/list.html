@@ -1,0 +1,33 @@
+{% extends 'common/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">{{ page_title }}</h1>
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text"><strong>Genre:</strong> {{ book.genre }}</p>
+                    <p class="card-text"><strong>Price:</strong> ${{ book.price }}</p>
+                    {% if book.avg_rating %}
+                        <p class="card-text"><strong>Average Rating:</strong> {{ book.avg_rating|floatformat:2 }}</p>
+                    {% else %}
+                        <p class="card-text"><strong>Average Rating:</strong> No ratings yet.</p>
+                    {% endif %}
+                    <a href="{% url 'books:details' book.slug %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <p>No books found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

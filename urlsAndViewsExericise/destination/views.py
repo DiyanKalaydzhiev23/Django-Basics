@@ -1,11 +1,21 @@
-from django.http import HttpRequest, HttpResponse, Http404
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from destination.models import Destination
+from review.models import Review
 
 
 def index(request: HttpRequest) -> HttpResponse:
-    return HttpResponse('Welcome to our travel application!')
+    featured_destinations = Destination.objects.filter(is_active=True).order_by('-created_at')[:3]
+    latest_reviews = Review.objects.filter(is_published=True).order_by('-created_at')[:3]
+
+    context = {
+        'page_title': 'Welcome',
+        'featured_destinations': featured_destinations,
+        'latest_reviews': latest_reviews,
+    }
+
+    return render(request, 'home.html', context)
 
 
 def destinations_list(request: HttpRequest) -> HttpResponse:
