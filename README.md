@@ -1,5 +1,10 @@
 # Django Basics
 
+
+### Other Repos
+
+- [Petstagram](https://github.com/DiyanKalaydzhiev23/petstagram-2026)
+
 ---
 
 ### Theory Tests
@@ -563,6 +568,7 @@
    - [Link](https://getbootstrap.com/)
 
 ---
+
 
 
 
