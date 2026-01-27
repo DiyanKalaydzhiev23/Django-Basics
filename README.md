@@ -1,5 +1,10 @@
 # Django Basics
 
+
+### Other Repos
+
+- [Petstagram](https://github.com/DiyanKalaydzhiev23/petstagram-2026)
+
 ---
 
 ### Theory Tests
@@ -11,6 +16,8 @@
 - [Urls and Views](https://forms.gle/sBKHwZEBTLqYSqABA)
 
 - [Templates](https://forms.gle/YFignn8j3QRipiV69)
+
+- [Forms Basics](https://forms.gle/5yoEyfecjhFnwKqEA)
 
 ---
 
@@ -563,6 +570,98 @@
    - [Link](https://getbootstrap.com/)
 
 ---
+
+
+---
+
+### Forms Basics
+
+1. Какво са формите
+   - Начин клиента да изпраща данни на съвъра
+   - Пример: search bar-а на Софтуни
+   - Основни параметри на формите
+     - action
+       - подаваме url към, който искаме да се изпратят нашите данни
+       - default value -> current_url
+     - method
+       - подаваме метода, който искаме да има нашата заявка
+       - default value ->  GET 
+       - При GET, информацията от формата се подава като query в url-a
+       - При POST/PUT, информацията се подава като body
+      
+2. Form fields
+   - Формите събират информация от input полетата в себе си
+   - Полетата трябва да имат параметър name, за да можем да ги прочетем от бек енда
+   - Можем да видим пратените данни в payload на request в браузъра 
+  
+3. Input types
+   - email
+   - range
+   - number
+   - text
+   - password
+   - url
+   - hidden
+   - radio
+   - checkbox 
+
+4. Textarea
+   - Input e single-line
+   - ТеxtArea е multi-line
+  
+5. Dropdowns
+   ```html
+      <select>
+         <option value="1">Gaming</option>
+         <option value="2 ">Reading</option>
+      </select>
+   ```
+
+6. Форми в Django
+   - Създаваме ги във `forms.py`
+   ```py
+      class EmployeeForm(forms.Form):
+         first_name = forms.CharField(
+               max_length=35,
+               required=True,
+         )
+   ```
+
+   - В темплейта
+   ```html
+   <form action="{% url 'index' %}" method="post" >
+      {{ employee_form }}
+      {% csrf_token %}
+      <button>Send</button>
+   </form>
+   ```
+
+   - Във view-то
+   ```py
+      def index(request):
+         if request.method == "GET":
+            context = {
+               "employee_form": EmployeeForm,
+            }
+   
+            return render(request, "web/index.html", context)
+         else:
+            print(request.POST)  # get the data but without any validation
+            form = EmployeeForm(request.POST)
+
+            if form.is_valid(): # starts validation process returns boolean
+               print(form.cleaned_data["first_name"])
+               return redirect('index')
+            else:
+               context = {
+                  "employee_form": form,  # подаваме формата с грешките в нея
+               }
+
+               return render(reques t, "web/index.html", context)
+   ```
+
+---
+
 
 
 
