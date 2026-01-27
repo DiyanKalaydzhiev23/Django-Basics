@@ -1,0 +1,35 @@
+{% load static %}
+{% load time_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>{% block title %}Hello{% endblock %}</title>
+</head>
+<body>
+    <header class="navbar bg-primary navbar-dark">
+        <img class="ms-4" height="50" width="50" src="{% static 'img.png' %}"/>
+        
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'books:home' %}">Book Hub</a>
+        </div>
+        
+        <nav class="d-flex gap-3">
+            <a class="nav-link text-white" href="{% url 'books:list' %}">Books</a>
+            <a class="nav-link text-white" href="{% url 'books:create' %}">Create Book</a>
+            <a class="nav-link text-white me-3" href="{% url 'reviews:list' %}">Recent Reviews</a>
+        </nav>
+    </header>
+    
+    <main class="container my-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+<footer>
+    {% time %}
+{#    {% include 'common/current_time.html' with current_time='2026-01-01' %}#}
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</html>

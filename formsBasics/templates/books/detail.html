@@ -1,0 +1,57 @@
+{% extends 'common/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ book.image_url }}" class="img-fluid" alt="{{ book.title }}">
+        </div>
+        <div class="col-md-8">
+            <h1>{{ book.title }}</h1>
+            <p><strong>Genre:</strong> {{ book.genre }}</p>
+            <p><strong>Publisher:</strong> {{ book.publisher|capfirst }}</p>
+            <p><strong>Publishing Date:</strong> {{ book.publishing_date }}</p>
+            <p><strong>Pages:</strong> {{ book.pages }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Price:</strong> ${{ book.price }}</p>
+            <p><strong>Tags:</strong> {{ book.tags.all|join:', ' }}</p>
+            {% if book.avg_rating %}
+                <p><strong>Average Rating:</strong> {{ book.avg_rating|floatformat:2 }}</p>
+            {% else %}
+                <p><strong>Average Rating:</strong> No ratings yet.</p>
+            {% endif %}
+            <p>{{ book.description }}</p>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'books:edit' book.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'books:delete' book.pk %}" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h2>Reviews</h2>
+    <div class="row">
+        {% for review in book.reviews.all %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Rating: {{ review.rating|floatformat:2 }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">by {{ review.author }}</h6>
+                    <p class="card-text">{{ review.body }}</p>
+                    {% if review.is_spoiler %}
+                    <p class="text-danger">This review contains spoilers.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <p>No reviews for this book yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

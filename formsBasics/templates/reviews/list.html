@@ -1,0 +1,32 @@
+{% extends 'common/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">{{ page_title }}</h1>
+    <div class="row">
+        {% for review in reviews %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'books:details' review.book.slug %}">{{ review.book.title }}</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Rating: {{ review.rating }} by {{ review.author }}</h6>
+                    <p class="card-text">{{ review.body }}</p>
+                    {% if review.is_spoiler %}
+                        <p class="text-danger">This review contains spoilers.</p>
+                    {% endif %}
+                    <a href="{% url 'reviews:details' review.pk %}" class="btn btn-primary">View Review</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <p>No recent reviews found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
