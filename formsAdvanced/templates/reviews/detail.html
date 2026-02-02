@@ -1,0 +1,33 @@
+{% extends 'common/base.html' %}
+{% load stars %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ page_title }}</h1>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>{{ review.body }}</p>
+                <footer class="blockquote-footer">
+                    {{ review.author }}
+                    <cite title="Source Title">
+                        with a rating of {{ review.rating|stars }}
+                    </cite>
+                </footer>
+            </blockquote>
+
+            {% if review.is_spoiler %}
+                <p class="text-danger mt-3">This review contains spoilers.</p>
+            {% endif %}
+
+            <a href="{% url 'books:details' review.book.slug %}" class="btn btn-secondary mt-3">Back to Book Details</a>
+            <a href="{% url 'reviews:edit' review.pk %}" class="btn btn-warning mt-3">Edit</a>
+            <a href="{% url 'reviews:delete' review.pk %}" class="btn btn-danger mt-3">Delete</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

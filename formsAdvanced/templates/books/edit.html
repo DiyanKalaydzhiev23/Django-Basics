@@ -1,0 +1,11 @@
+{% extends 'common/base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4">Edit Book</h1>
+        {% crispy form %}
+{#        {{ form|crispy }}#}
+    </div>
+{% endblock %}

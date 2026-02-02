@@ -1,0 +1,28 @@
+{% extends 'common/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Welcome to Book Hub</h1>
+            <p class="col-md-8 fs-4">Your one-stop place for book reviews and information.</p>
+            <p>We have a total of {{ total_books|default:0 }} books in our collection.</p>
+        </div>
+    </div>
+
+    {% if latest_book %}
+    <div class="row align-items-md-stretch">
+        <div class="col-md-12">
+            <div class="h-100 p-5 text-white bg-dark rounded-3">
+                <h2>Our Latest Addition</h2>
+                <h3>{{ latest_book.title|upper }}</h3>
+                <p>{{ latest_book.description|lower|capfirst|truncatewords:3|default:"No description available." }}</p>
+                <a href="{% url 'books:details' latest_book.slug %}" class="btn btn-outline-light" type="button">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+    
+        {% for form in formset.forms %}
+            {{ form }}
+            {% if formset.can_delete %}
+                <div>
+                    {{ form.DELETE }}
+                    <label>Delete this review</label>
+                </div>
+            {% endif %}
+        {% endfor %}
+    
+        <button>Save all changes</button>
+    </form>
+{% endblock %}
