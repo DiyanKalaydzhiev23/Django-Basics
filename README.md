@@ -21,6 +21,8 @@
 
 - [Forms Advanced](https://forms.gle/NaT5UwYh1k1exaZb6)
 
+- [Class Based Views Basics](https://forms.gle/ex9BNEnXxsYFB2YV7)
+
 ---
 
 # Plans
@@ -933,6 +935,191 @@
    
 --- 
 
+
+### Classed Based Views - Basics
+
+- Защо да ползваме CBV?
+  - По-чисто е
+  - Позволява ни да правим наследяване
+  - Получаваме абстракция
+ 
+1. views.View
+   - Базово клас вю
+   ```py
+   class IndexView(views.View):
+      def get(self, request):
+         # perform get logic
+
+      def post(self, request):
+         # perform post logic
+   ```
+
+2. Custom Class Based View
+   ```py
+   class BaseView:
+       @classonlymethod  # позвлолява извикване само през клас
+       def as_view(cls):
+           def view(request, *args, **kwargs):
+               self = cls()  # Create an instance of the view
+               if request.method == "GET":
+                   return self.get(request, *args, **kwargs)
+               elif request.method == "POST":
+                   return self.post(request, *args, **kwargs)
+               else:
+                   return HttpResponseNotAllowed(['GET', 'POST'])  # Handle unsupported methods
+   
+           return view
+   
+       def get(self, request, *args, **kwargs):
+           raise NotImplementedError("GET method not implemented")
+   
+       def post(self, request, *args, **kwargs):
+           raise NotImplementedError("POST method not implemented")
+   
+   class MyView(BaseView):
+       def get(self, request, *args, **kwargs):
+           # perform some get logic
+           return HttpResponse("This is a GET response")
+   
+       def post(self, request, *args, **kwargs):
+           # perform some post logic
+           return HttpResponse("This is a POST response")
+
+   ```
+
+   ```py
+   urlpatterns = [
+      path('cbv/', MyView.as_view())  # as_view връща обект - нашето view
+   ]
+   ```
+
+   - as_view
+     - Връща вюто като callable
+     - Може да бъде извикано с kwargs
+     ```py
+     urlpatterns = [
+          # Redirect to 'https://www.example.com/'
+          path('redirect-example/', CustomRedirectView.as_view(url='https://www.example.com/'), name='custom-redirect'),
+      ]
+     ```
+
+   - dispatch
+     - Използва се за викане на правилните методи спрямо рекуеста
+     - Можем да го използваме за валидация, дали даден потребител има достъп до даден ресурс
+     ```py
+      import random
+      from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
+      
+      # Simulating a Django-like environment
+      class SimulatedRequest:
+          """A simple simulated request object."""
+          def __init__(self, method):
+              self.method = method.upper()
+              self.user = 'SimulatedUser'  # Placeholder for user information
+
+      class BaseView:
+          def dispatch(self, request, *args, **kwargs):
+              """
+              Simulate the dispatch method, routing the request to the appropriate handler.
+              For POST requests, check if the user has permission using a random choice.
+              """
+              if request.method == 'GET':
+                  return self.get(request, *args, **kwargs)
+              elif request.method == 'POST':
+                  # Simulate permission checking
+                  has_permission = random.choice([True, False])
+                  print(f"Permission check for POST: {'Allowed' if has_permission else 'Denied'}")
+                  
+                  if has_permission:
+                      return self.post(request, *args, **kwargs)
+                  else:
+                      return HttpResponseForbidden("You do not have permission to perform this action.")
+              else:
+                  return HttpResponseNotAllowed(['GET', 'POST'])
+      
+          def get(self, request, *args, **kwargs):
+              return HttpResponse("Base GET response")
+      
+          def post(self, request, *args, **kwargs):
+              return HttpResponse("Base POST response")
+
+      class MyView(BaseView):
+          def get(self, request, *args, **kwargs):
+              return HttpResponse("MyView GET response")
+      
+          def post(self, request, *args, **kwargs):
+              return HttpResponse("MyView POST response")
+      
+      # Simulating requests
+      def simulate_request(view, method):
+          request = SimulatedRequest(method)
+          response = view.dispatch(request)
+          print(f"Response to {method} request: {response.content.decode()} (Status Code: {response.status_code})\n")
+      
+      # Create an instance of MyView
+      my_view = MyView()
+      
+      # Simulate GET request
+      simulate_request(my_view, 'GET')
+      
+      # Simulate POST requests multiple times to observe permission variations
+      for _ in range(3):
+          simulate_request(my_view, 'POST')
+
+     ```
+
+3. Типове вюта
+   - TemplateView - Показва темплейт 
+   ```py
+      class MyTemplateView(TemplateView):
+      # static template
+       template_name = "my_template.html"
+
+      # dynamic template
+      def get_template_names(self):
+      pass
+
+      # static context
+      extra_context = {      
+         "title": "hello",
+      }
+      
+      # Dynamic context
+       def get_context_data(self, **kwargs):
+           # Call the base implementation first to get the default context
+           context = super().get_context_data(**kwargs)
+           
+           # Add extra context
+           context['title'] = 'My Template View'
+           context['user_status'] = 'Active'
+           context['random_number'] = 42
+           context['items'] = ['Apple', 'Banana', 'Cherry']
+           
+           return context
+   ```
+   - RedirectView
+   ```py
+      from django.views.generic.base import RedirectView
+      
+      class MyRedirectView(RedirectView):
+          url = 'https://www.example.com/'  # The URL to redirect to
+   ```
+
+   - CreateView, UpdateView, DeleteView
+     - Получава модел, темплейт, success_url и полета, и генерира форма, която хендълва get и post
+     - get_success_url ни позволява да взимаме динамично success_url
+      ```py
+         # views.py
+         
+         class BookCreateView(CreateView):
+             model = Book
+             fields = ['title', 'author', 'published_date']
+             template_name = 'book_form.html'  # The template that will be used to render the form
+             success_url = reverse_lazy('book-list')  # Redirect to the book list view after a successful creation
+   
+      ```
+
+---
 
 
 
