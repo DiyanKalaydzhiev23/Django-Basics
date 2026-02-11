@@ -23,6 +23,8 @@
 
 - [Class Based Views Basics](https://forms.gle/ex9BNEnXxsYFB2YV7)
 
+- [Class Based Views Advanced](https://forms.gle/RBW6bbFSHdQmeUi38)
+
 ---
 
 # Plans
@@ -1122,6 +1124,93 @@
 ---
 
 
+
+### Class Based Views - Advanced
+
+1. ListView
+   - Дава ни списък от елементи
+   - В контекста се попълват като object_list и model_name_list
+   ```py
+   # views.py
+      class FilteredBookListView(ListView):
+          model = Book
+          template_name = 'filtered_book_list.html'
+
+          # за филтрации (optional)
+          def get_queryset(self):
+              # Filter books published after January 1, 2020
+              return Book.objects.filter(published_date__gt=date(2020, 1, 1))
+
+   ```
+   - Дава ни pagination
+   ```py
+      class PaginatedBookListView(ListView):
+          model = Book
+          template_name = 'paginated_book_list.html'
+          context_object_name = 'books'
+          paginate_by = 10  # Number of books per page
+   ```
+   - Достъпване в темплейта
+   - Слага page в url-a
+   ```py
+       <div class="pagination">
+           <span class="step-links">
+               {% if page_obj.has_previous %}
+                   <a href="?page=1">&laquo; first</a>
+                   <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+               {% endif %}
+   
+               <span class="current">
+                   Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+               </span>
+   
+               {% if page_obj.has_next %}
+                   <a href="?page={{ page_obj.next_page_number }}">next</a>
+                   <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+               {% endif %}
+           </span>
+       </div>
+   ```
+   
+2. Detail View
+   - Подобно на list view, но работи с един обект
+   <img src="https://codefellows.github.io/sea-python-401d6/_images/DetailView.png" />
+
+3. Полезни CBV методи
+   - get()
+     - Описание: Този метод се използва за обработка на HTTP GET заявки. В него можете да определите логиката, която се изпълнява при получаване на GET заявка към даден URL.
+   - post()
+     - Описание: Този метод се използва за обработка на HTTP POST заявки. Подобно на get(), но за POST заявки, тук се дефинира логиката, която трябва да се изпълни, когато POST заявка е получена.
+   
+   - get_queryset()
+     - Описание: Използва се за извличане на набора от данни (queryset), който ще се обработва и показва от view-то. Често се използва в CBV като ListView и DetailView, за да се определи какви данни да бъдат изведени.
+     - Статична настройка: Може да бъде зададен предварително чрез статичен атрибут queryset, но чрез този метод можете динамично да персонализирате набора от данни.
+       
+   - get_context_data()
+     - Описание: Този метод се използва за добавяне на допълнителен контекст към шаблона (template). В него можете да добавите всякакви допълнителни данни, които искате да предадете към шаблона.
+     - Статична настройка: Ако няма нужда от динамичен контекст, статични контекстови данни могат да се зададат директно в extra_context атрибут на класа.
+       
+   - dispatch()
+     - Описание: Методът dispatch() решава кой HTTP метод (например, GET или POST) да бъде използван за дадена заявка и съответно извиква съответния метод (get(), post(), и т.н.). Той е отговорен за маршрутизирането на заявката към правилния метод. Може да се изполва за роверка на достъпа на потребител
+   
+   - get_template_names()
+     - Описание: Този метод връща списък с имена на шаблони, които трябва да се използват за рендиране на view-то. Може да се използва за динамично определяне на шаблона въз основа на определени условия.
+     - Статична настройка: Статично, името на шаблона обикновено се задава чрез атрибута template_name. get_template_names() може да бъде използван за по-динамична настройка.
+   - get_context_object_name()
+     - Описание: Този метод се използва в изгледи като DetailView и ListView, за да се определи името на контекстовата променлива, която ще бъде използвана в шаблона. Тази променлива съдържа обекта или списъка от обекти, който се предава на шаблона.
+     - Статичен заместител: Вместо да използвате get_context_object_name(), можете да зададете статично името на контекстовата променлива чрез атрибута context_object_name.
+   - get_success_url()
+     - Описание: Този метод се използва в изгледи като CreateView, UpdateView, и DeleteView, за да определи URL адреса, към който потребителят ще бъде пренасочен след успешното изпълнение на дадено действие (напр. създаване, обновяване или изтриване на обект).
+     - Статичен заместител: Вместо да използвате get_success_url(), можете статично да зададете URL адреса чрез атрибута success_url.
+   - render_to_response()
+     - Описание: Този метод се използва за рендиране на шаблон с определен контекст и връщане на HttpResponse обект. Това е основният метод за рендиране в CBV.
+     - Статична настройка: Ако желаете да се използва един и същ контекст и шаблон във всяко рендиране, можете да го зададете статично чрез други методи като get_context_data() и get_template_names().
+
+4. Декоратори
+   - В джанго често се използват за промяна на поведението на даден метод.
+   - login_required
+   - permission_required
+---
 
 
 
