@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveler List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .search-bar input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        .search-bar button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a, .pagination .current-page {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .pagination a:hover {
+            background-color: #f2f2f2;
+        }
+        .pagination .current-page {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .pagination .disabled {
+            color: #ccc;
+            pointer-events: none;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Traveler List</h1>
+
+        <div class="search-bar">
+            <form method="get" action="">
+                <input type="text" name="q" placeholder="Search travelers by name or email..." value="{{ request.GET.q|default:'' }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        {% if page_obj %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Age</th>
+                        <th>Country</th>
+                        <th>Registered On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for traveler in page_obj.object_list %}
+                        <tr>
+                            <td>{{ traveler.name }}</td>
+                            <td>{{ traveler.email }}</td>
+                            <td>{{ traveler.age }}</td>
+                            <td>{{ traveler.get_country_display }}</td>
+                            <td>{{ traveler.registered_at|date:"Y-m-d" }}</td>
+                            <td>
+                                <a href="{% url 'travelers:detail' pk=traveler.pk %}">View</a>
+                                <a href="{% url 'travelers:update' pk=traveler.pk %}">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                {% else %}
+                    <span class="disabled">Previous</span>
+                {% endif %}
+
+                <span class="current-page">{{ page_obj.number }}</span>
+                <span class="total-pages">of {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                {% else %}
+                    <span class="disabled">Next</span>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No travelers found.</p>
+        {% endif %}
+
+        <footer>
+            <a href="{% url 'common:home' %}" class="back-link">Back to Home</a>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destination Details - {{ destination.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        p {
+            line-height: 1.6;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        .detail-item strong {
+            display: inline-block;
+            width: 150px;
+        }
+        .section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .traveler-list, .review-list {
+            list-style: none;
+            padding: 0;
+        }
+        .traveler-item, .review-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .review-item p {
+            margin: 5px 0;
+        }
+        .review-rating {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .available {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .not-available {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{{ destination.name }}</h1>
+            <p class="detail-item"><strong>Country:</strong> {{ destination.get_country_display }}</p>
+            <p class="detail-item"><strong>Price:</strong> ${{ destination.price }}</p>
+            <p class="detail-item"><strong>Availability:</strong>
+                {% if destination.is_available %}
+                    <span class="available">Available</span>
+                {% else %}
+                    <span class="not-available">Not Available</span>
+                {% endif %}
+            </p>
+            <p class="detail-item"><strong>Last Updated:</strong> {{ destination.updated_at|date:"F d, Y P" }}</p>
+            <p class="detail-item"><strong>Average Rating:</strong> {{ destination.avg_rating|floatformat:2|default:"No reviews yet" }} / 5.00</p>
+        </header>
+
+        <main>
+            <div class="section">
+                <h2>Description</h2>
+                <p>{{ destination.description }}</p>
+            </div>
+
+            <div class="section">
+                <h2>Travelers who visited this destination</h2>
+                {% if destination.travelers.all %}
+                    <ul class="traveler-list">
+                        {% for traveler in destination.travelers.all %}
+                            <li class="traveler-item">
+                                <p><strong>Name:</strong> {{ traveler.name }}</p>
+                                <p><strong>Email:</strong> {{ traveler.email }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No travelers have visited this destination yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="section">
+                <h2>Reviews</h2>
+                {% if destination.reviews.all %}
+                    <ul class="review-list">
+                        {% for review in destination.reviews.all %}
+                            <li class="review-item">
+                                <p><strong>Reviewer:</strong> {{ review.traveler.name }}</p>
+                                <p><strong>Rating:</strong> <span class="review-rating">{{ review.rating }} / 5.00</span></p>
+                                <p><strong>Type:</strong> {{ review.get_review_type_display }}</p>
+                                <p><strong>Verified:</strong> {% if review.is_verified %}Yes{% else %}No{% endif %}</p>
+                                <p><strong>Comment:</strong> {{ review.body }}</p>
+                                <p><em>Reviewed on: {{ review.created_at|date:"F d, Y P" }}</em></p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No reviews available for this destination yet.</p>
+                {% endif %}
+            </div>
+        </main>
+
+        <footer>
+            {# Assuming a URL named 'destination_list' or similar to go back #}
+            <a href="{% url 'common:home' %}" class="back-link">Back to Home</a>
+        </footer>
+    </div>
+</body>
+</html>
