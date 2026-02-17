@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Music App</title>
+    <!-- Static Load -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <div id="box">
+      <!-- Navigation Bar -->
+      <header>
+        <nav>
+          <img src="/static/images/headphones.png" alt="headphones" />
+          <a href="#">Home</a>
+          <ul></ul>
+          <ul>
+            <!--Only for user with created profile-->
+            <li><a href="#">Create Album</a></li>
+            <li><a href="#">Profile</a></li>
+          </ul>
+        </nav>
+      </header>
+      <!-- End Navigation Bar -->
+
+      <!-- Main Content -->
+      <!--Details Page-->
+      <section id="detailsPage">
+        <div class="wrapper">
+          <div class="profilePage">
+            <img
+              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              alt="Profile Image"
+            />
+          </div>
+
+          <div class="profileText">
+            <!-- Profile Info -->
+            <h1>Username: testUser_12345</h1>
+            <h1>Email: testuser@email.com</h1>
+            <h1>Age: 27</h1>
+            <h1>Albums: 3</h1>
+          </div>
+
+          <div class="actionBtn">
+            <!-- Button for Deleting the Profile -->
+            <a href="#" class="remove">Delete</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <div>&copy;SoftUni Team. All rights reserved.</div>
+      </footer>
+      <!-- End Footer -->
+    </div>
+  </body>
+</html>
