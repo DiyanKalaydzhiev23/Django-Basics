@@ -6,8 +6,9 @@
       <div class="profileText">
         <!-- Delete Profile Form -->
         <h1>Are you sure you want to delete your profile?</h1>
-        <form>
+        <form method="post">
           <!-- Confirm Button -->
+            {% csrf_token %}
           <button class="delete-profile" type="submit">Delete</button>
         </form>
         <!-- End Delete Profile Form -->
