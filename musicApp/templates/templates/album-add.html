@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Music App</title>
+    <!-- Static Load -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <div id="box">
+      <!-- Navigation Bar -->
+      <header>
+        <nav>
+          <img src="/static/images/headphones.png" alt="headphones" />
+          <a href="#">Home</a>
+          <ul></ul>
+          <ul>
+            <!--Only for user with created profile-->
+            <li><a href="#">Create Album</a></li>
+            <li><a href="#">Profile</a></li>
+          </ul>
+        </nav>
+      </header>
+      <!-- End Navigation Bar -->
+
+      <!-- Main Content -->
+      <!--Create Page-->
+      <section class="createPage">
+        <form>
+          <fieldset>
+            <legend>Add Album</legend>
+            <div class="container">
+              <!-- Form for Adding Album -->
+              <label for="name">Album Name:</label>
+              <input id="name" type="text" placeholder="Album Name" required />
+
+              <label for="artist">Artist:</label>
+              <input id="artist" type="text" placeholder="Artist" required />
+
+              <label for="genre">Genre:</label>
+              <select id="genre" name="genre">
+                <option value="1">-------</option>
+                <option value="2">Pop Music</option>
+                <option value="3">Jazz Music</option>
+                <option value="4">R&B Music</option>
+                <option value="5">Rock Music</option>
+                <option value="6">Country Music</option>
+                <option value="7">Dance Music</option>
+                <option value="8">Hip Hop Music</option>
+                <option value="9">Other</option>
+              </select>
+
+              <label for="description">Description:</label>
+              <textarea id="description" placeholder="Description"></textarea>
+
+              <label for="imgUrl">Image URL:</label>
+              <input id="imgUrl" type="url" placeholder="Image URL" required />
+
+              <label for="price">Price:</label>
+              <input id="price" type="number" placeholder="Price" required />
+
+              <!-- Button for Adding Album -->
+              <button class="add-album" type="submit">Add New Album</button>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+      <!-- Footer -->
+      <footer>
+        <div>&copy;SoftUni Team. All rights reserved.</div>
+      </footer>
+      <!-- End Footer -->
+    </div>
+  </body>
+</html>

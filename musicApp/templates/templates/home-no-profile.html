@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Music App</title>
+    <!-- Static Load -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <div id="box">
+      <!-- Navigation Bar -->
+      <header>
+        <nav>
+          <img src="/static/images/headphones.png" alt="headphones" />
+          <a href="#">Home</a>
+          <ul></ul>
+          <ul>
+            <!--Only for user with created profile-->
+            <li><a href="#">Create Album</a></li>
+            <li><a href="#">Profile</a></li>
+          </ul>
+        </nav>
+      </header>
+      <!-- End Navigation Bar -->
+
+      <!-- Main Content -->
+      <!--Home Page-->
+      <div class="container-inline">
+        <section id="welcomePage">
+          <div id="welcome-message">
+            <h1>Welcome to</h1>
+            <h1>My Music App!</h1>
+          </div>
+          <div class="music-img">
+            <img src="/static/images/musicIcons.webp" alt="music-icon" />
+          </div>
+        </section>
+
+        <!-- Registration -->
+        <section id="registerPage">
+          <form>
+            <fieldset>
+              <legend>Profile</legend>
+              <!-- Form for Registration -->
+              <label for="username">Username:</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Username"
+              />
+
+              <label for="email">Email:</label>
+              <input id="email" name="email" type="email" placeholder="Email" />
+
+              <label for="age">Age:</label>
+              <input
+                id="age"
+                name="age"
+                type="number"
+                min="0"
+                placeholder="Age"
+              />
+              <!-- Button to Create Profile -->
+              <button type="submit" class="register">Enter</button>
+            </fieldset>
+          </form>
+        </section>
+      </div>
+      <!-- Footer -->
+      <footer>
+        <div>&copy;SoftUni Team. All rights reserved.</div>
+      </footer>
+      <!-- End Footer -->
+    </div>
+  </body>
+</html>
