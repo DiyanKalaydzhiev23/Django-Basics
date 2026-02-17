@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
