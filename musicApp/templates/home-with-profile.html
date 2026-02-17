@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="catalogPage">
+<!--  If No albums in catalog -->
+<p>No Albums in Catalog!</p>
+
+<!-- If albums in catalog -->
+<h1>All Albums</h1>
+<!-- First Card-Box in catalog -->
+<div class="card-box">
+  <img src="/images/BrandiCarlile.png" alt="Cover Image" />
+  <div>
+    <div class="text-center">
+      <p class="name">Name: In These Silent Days</p>
+      <p class="artist">Artist: Brandi Carlile</p>
+      <p class="genre">Genre: Other</p>
+      <p class="price">Price: $12.80</p>
+    </div>
+    <div class="btn-group">
+      <a href="#">Details</a>
+    </div>
+  </div>
+</div>
+<!-- End First Card-Box in catalog -->
+
+<!-- Second Card-Box in catalog -->
+<div class="card-box">
+  <img src="/images/pinkFloyd.jpg" />
+  <div>
+    <div class="text-center">
+      <p class="name">Name: The Dark Side of the Moon</p>
+      <p class="artist">Artist: Pink Floyd</p>
+      <p class="genre">Genre: Rock Music</p>
+      <p class="price">Price: $28.75</p>
+    </div>
+    <div class="btn-group">
+      <a href="#">Details</a>
+    </div>
+  </div>
+</div>
+<!-- End Second Card-Box in catalog -->
+
+<!-- Third Card-Box in catalog -->
+<div class="card-box">
+  <img src="/images/Lorde.jpg" />
+  <div>
+    <div class="text-center">
+      <p class="name">Name: Melodrama</p>
+      <p class="artist">Artist: Lorde</p>
+      <p class="genre">Genre: Pop Music</p>
+      <p class="price">Price: $7.33</p>
+    </div>
+    <div class="btn-group">
+      <a href="#">Details</a>
+    </div>
+  </div>
+</div>
+<!-- End Third Card-Box in catalog -->
+</section>
+{% endblock %}

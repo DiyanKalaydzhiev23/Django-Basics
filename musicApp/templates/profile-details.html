@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="detailsPage">
+    <div class="wrapper">
+      <div class="profilePage">
+        <img
+          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+          alt="Profile Image"
+        />
+      </div>
+    
+      <div class="profileText">
+        <!-- Profile Info -->
+        <h1>Username: testUser_12345</h1>
+        <h1>Email: testuser@email.com</h1>
+        <h1>Age: 27</h1>
+        <h1>Albums: 3</h1>
+      </div>
+    
+      <div class="actionBtn">
+        <!-- Button for Deleting the Profile -->
+        <a href="#" class="remove">Delete</a>
+      </div>
+    </div>
+</section>
+{% endblock %}
