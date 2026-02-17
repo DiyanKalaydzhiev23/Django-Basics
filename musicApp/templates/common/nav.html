@@ -7,7 +7,7 @@
   <ul></ul>
   <ul>
     <!--Only for user with created profile-->
-    <li><a href="#">Create Album</a></li>
+    <li><a href="{% url 'albums:create' %}">Create Album</a></li>
     <li><a href="{% url 'profiles:detail' %}">Profile</a></li>
   </ul>
 </nav>
