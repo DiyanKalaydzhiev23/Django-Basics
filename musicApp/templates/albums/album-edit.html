@@ -1,105 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>My Music App</title>
-    <!-- Static Load -->
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
+{% extends 'base.html' %}
 
-  <body>
-    <div id="box">
-      <!-- Navigation Bar -->
-      <header>
-        <nav>
-          <img src="/images/headphones.png" alt="headphones" />
-          <a href="#">Home</a>
-          <ul></ul>
-          <ul>
-            <!--Only for user with created profile-->
-            <li><a href="#">Create Album</a></li>
-            <li><a href="#">Profile</a></li>
-          </ul>
-        </nav>
-      </header>
-      <!-- End Navigation Bar -->
-
-      <!-- Main Content -->
-      <!--Edit Page-->
+{% block content %}
       <section class="editPage">
-        <form>
+        <form method="post">
           <fieldset>
             <legend>Edit Album</legend>
             <div class="container">
-              <!-- Form for Editing Album -->
-              <label for="name">Album Name:</label>
-              <input
-                id="name"
-                name="name"
-                class="name"
-                type="text"
-                value="In These Silent Days"
-              />
-
-              <label for="artist">Artist:</label>
-              <input
-                id="artist"
-                name="artist"
-                class="artist"
-                type="text"
-                value="Brandi Carlile"
-              />
-
-              <label for="genre">Genre:</label>
-              <input
-                id="genre"
-                name="genre"
-                class="genre"
-                type="text"
-                value="Other"
-              />
-
-              <label for="description">Description:</label>
-              <textarea
-                id="description"
-                name="description"
-                class="description"
-                rows="10"
-                cols="10"
-              >
-Upon release, In These Silent Days received positive reviews from critics. At Metacritic, which assigns a normalized rating out of 100 to reviews from mainstream critics, the album has an average score of 87 out of 100, which indicates 'universal acclaim'.</textarea
-              >
-
-              <label for="imgUrl">Image URL:</label>
-              <input
-                id="imgUrl"
-                name="imgUrl"
-                class="imgUrl"
-                type="text"
-                value="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2021%2F07%2F20%2FBrandiCarlile-AlbumCover-Web.jpg"
-              />
-
-              <label for="price">Price:</label>
-              <input
-                id="price"
-                name="price"
-                class="price"
-                type="text"
-                value="12.8"
-              />
-
+              {{ form }}
+              {% csrf_token %}
               <!-- Button for Editing Album -->
               <button class="edit-album" type="submit">Edit Album</button>
             </div>
           </fieldset>
         </form>
       </section>
-
-      <!-- Footer -->
-      <footer>
-        <div>&copy;SoftUni Team. All rights reserved.</div>
-      </footer>
-      <!-- End Footer -->
-    </div>
-  </body>
-</html>
+{% endblock %}
