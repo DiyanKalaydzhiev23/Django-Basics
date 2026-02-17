@@ -20,7 +20,7 @@
           <p class="price">Price: ${{ album.price|floatformat:2 }}</p>
         </div>
         <div class="btn-group">
-          <a href="#">Details</a>
+          <a href="{% url 'albums:detail' album.pk %}">Details</a>
         </div>
       </div>
     </div>
