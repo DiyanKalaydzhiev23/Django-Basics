@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView, UpdateView
-from albums.forms import AlbumCreateForm, AlbumEditForm
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from albums.forms import AlbumCreateForm, AlbumEditForm, AlbumDeleteForm
 from albums.mixins import AttachOwnerMixin
 from albums.models import Album
 from profiles.util import get_profile
@@ -25,3 +25,16 @@ class AlbumEditView(AttachOwnerMixin, UpdateView):
 
     def get_success_url(self) -> str:
         return reverse('albums:detail', kwargs={'pk': self.object.pk})
+
+
+class AlbumDeleteView(DeleteView):
+    model = Album
+    form_class = AlbumDeleteForm
+    template_name = 'albums/album-delete.html'
+    success_url = reverse_lazy("profiles:home")
+
+    def get_initial(self) -> dict:
+        return self.object.__dict__
+
+    def form_invalid(self, form):
+        return super().form_valid(form)
