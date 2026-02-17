@@ -8,7 +8,7 @@ class Profile(models.Model):
         validators=[
             MinLengthValidator(2),
             RegexValidator(
-                regex=r'^[A-z0-9_]+$',
+                regex=r'^[A-Za-z0-9_]+$',
                 message='Ensure this value contains only letters, numbers, and underscore.',
             )
         ]
