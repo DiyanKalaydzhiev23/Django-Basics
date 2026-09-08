@@ -3,7 +3,7 @@
 - [HTTP and Internet](https://forms.gle/SF9gSGPJta1CUkkz6)
 
 ---
----
+
 # Plans
 
 ### 01. Internet and HTTP
