@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes App</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'list-categories' %}">Categories</a>
+    </nav>
+    
+    <form>
+        <input name="q" value="{{ query }}" placeholder="Search Notes">
+    </form>
+    
+    {% for note in notes %}
+        <h2>{{ note.title }}</h2>
+        <p>{{ note.body }}</p>
+    {% empty %}
+        <h1>No notes.</h1>
+    {% endfor %}
+
+    <script>
+        (
+            function () {
+                const inputField = document.querySelector('input[name="q"]');
+                const form = inputField?.closest('form');
+                
+                if (!form || !inputField) return;
+                
+                const focusInput = () => {
+                    inputField.focus();
+                    const len = inputField.value.length;
+                    inputField.setSelectionRange(len, len);
+                }
+                focusInput();
+                
+                let timer;
+                inputField.addEventListener('input', () => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => form.requestSubmit(), 300);
+                })
+            }
+        )();
+    </script>
+</body>
+</html>

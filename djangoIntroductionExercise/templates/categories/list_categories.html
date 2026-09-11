@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes App</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'list-categories' %}">Categories</a>
+    </nav>
+    {% for category in categories %}
+        <h2>{{ category.name }}</h2>
+        <p>{{ category.description }}</p>
+        <p>{{ category.created_at }}</p>
+    {% empty %}
+        <h1>No categories.</h1>
+    {% endfor %}
+</body>
+</html>
