@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ review.name }} | Travel Board{% endblock %}
+
+{% block content %}
+    <section class="detail-panel">
+        <div class="container py-5">
+            <div class="row align-items-center g-4 py-lg-4">
+                <div class="col-lg-8">
+                    <p class="eyebrow text-white">Review</p>
+                    <h1 class="hero-title mb-4">{{ review.name }}</h1>
+                    <p class="section-copy mb-4">{{ review.body }}</p>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <a class="btn btn-light btn-lg px-4" href="{% url 'destinations:list' %}">Back to destinations</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="{% url 'destinations:redirect' %}">SoftUni</a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="detail-meta">
+                        <span class="d-block text-white-50 small fw-bold text-uppercase mb-2">Rating</span>
+                        <strong class="h3 d-block mb-4">{{ review.rating }}</strong>
+                        <span class="d-block text-white-50 small fw-bold text-uppercase mb-2">Status</span>
+                        {% if review.is_published %}
+                            <span class="status-badge active">Published</span>
+                        {% else %}
+                            <span class="status-badge inactive">Not Published</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

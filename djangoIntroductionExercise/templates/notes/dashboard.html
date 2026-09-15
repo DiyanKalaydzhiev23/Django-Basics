@@ -13,7 +13,7 @@
     <form>
         <input name="q" value="{{ query }}" placeholder="Search Notes">
     </form>
-    
+    <h1>Count of notes: {{ notes.count }}</h1>
     {% for note in notes %}
         <h2>{{ note.title }}</h2>
         <p>{{ note.body }}</p>

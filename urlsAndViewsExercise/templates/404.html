@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found | Travel Board{% endblock %}
+
+{% block content %}
+    <section class="hero-band">
+        <div class="container py-5">
+            <div class="row align-items-center justify-content-between g-4 py-lg-5">
+                <div class="col-lg-7">
+                    <p class="eyebrow">404</p>
+                    <h1 class="hero-title mb-4">This page is off the map.</h1>
+                    <p class="hero-copy mb-4">
+                        The destination you tried to open is not available, but the main travel board is ready.
+                    </p>
+                    <a class="btn btn-brand btn-lg px-4" href="{% url 'destinations:dashboard' %}">Return to dashboard</a>
+                </div>
+                <div class="col-lg-4">
+                    <div class="empty-state bg-white p-4">
+                        <span class="destination-letter mb-3">?</span>
+                        <h2 class="h4 fw-bold">Route not found</h2>
+                        <p class="text-secondary mb-0">Check the URL or browse the available destinations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

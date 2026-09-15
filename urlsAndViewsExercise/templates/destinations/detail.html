@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ destination.name }} | Travel Board{% endblock %}
+
+{% block content %}
+    <section class="detail-panel">
+        <div class="container py-5">
+            <div class="row align-items-center g-4 py-lg-4">
+                <div class="col-lg-8">
+                    <p class="eyebrow text-white">Destination</p>
+                    <h1 class="hero-title mb-4">{{ destination.name }}</h1>
+                    <p class="section-copy mb-4">{{ destination.description }}</p>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <a class="btn btn-light btn-lg px-4" href="{% url 'destinations:list' %}">Back to destinations</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="{% url 'destinations:redirect' %}">SoftUni</a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="detail-meta">
+                        <span class="d-block text-white-50 small fw-bold text-uppercase mb-2">Country</span>
+                        <strong class="h3 d-block mb-4">{{ destination.country }}</strong>
+                        <span class="d-block text-white-50 small fw-bold text-uppercase mb-2">Status</span>
+                        {% if destination.is_active %}
+                            <span class="status-badge active">Active</span>
+                        {% else %}
+                            <span class="status-badge inactive">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <p class="eyebrow">Traveler feedback</p>
+            <h2 class="section-title mb-0">Reviews for {{ destination.name }}</h2>
+        </div>
+
+        <div class="row g-4">
+            {% for review in destination.reviews.all %}
+                <div class="col-md-6 col-xl-4">
+                    <article class="card review-card h-100">
+                        <div class="card-body d-flex flex-column p-4">
+                            <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                                <span class="rating-badge">{{ review.rating|floatformat:1 }}</span>
+                                <span class="text-secondary small">{{ review.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <h3 class="h5 fw-bold mb-2">{{ review.author }}</h3>
+                            <p class="text-secondary mb-0">{{ review.body }}</p>
+                        </div>
+                    </article>
+                </div>
+                <a href="{% url 'review-detail' review.pk %}">Link to Full review</a>
+            {% empty %}
+                <div class="col-12">
+                    <div class="empty-state bg-white p-5 text-center">
+                        <h2 class="h4 fw-bold">No reviews for this destination yet.</h2>
+                        <p class="text-secondary mb-0">Traveler feedback will appear here when it is available.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

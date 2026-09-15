@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Reviews | Travel Board{% endblock %}
+
+{% block content %}
+    <section class="hero-band">
+        <div class="container py-5">
+            <p class="eyebrow">Traveler notes</p>
+            <h1 class="section-title mb-3">Reviews by year</h1>
+            <p class="section-copy mb-0">A focused view of traveler feedback from the selected year.</p>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="row g-4">
+            {% for review in reviews %}
+                <div class="col-md-6 col-xl-4">
+                    <article class="card review-card h-100">
+                        <div class="card-body d-flex flex-column p-4">
+                            <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                                <span class="rating-badge">{{ review.rating|floatformat:1 }}</span>
+                                <span class="text-secondary small">{{ review.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <h2 class="h5 fw-bold mb-1">{{ review.author }}</h2>
+                            <a class="footer-link mb-3" href="{% url 'destinations:detail' review.destination.slug %}">
+                                {{ review.destination.name }}, {{ review.destination.country }}
+                            </a>
+                            <p class="text-secondary mb-0">{{ review.body }}</p>
+                        </div>
+                    </article>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="empty-state bg-white p-5 text-center">
+                        <h2 class="h4 fw-bold">No reviews found.</h2>
+                        <p class="text-secondary mb-0">Try another year once reviews have been published.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
