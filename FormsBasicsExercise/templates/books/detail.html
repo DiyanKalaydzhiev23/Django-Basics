@@ -20,9 +20,9 @@
                 <p class="card-text"><strong>No ratings yet</strong></p>
             {% endif %}
             <p>{{ book.description }}</p>
-            <div class="col-md-4">
-                <a href="{% url 'books:edit' book.slug %}">Edit Book</a>
-                <a href="{% url 'books:delete' book.slug %}">Delete Book</a>
+            <div class="d-flex gap-2 mt-4">
+                <a href="{% url 'books:edit' book.slug %}" class="btn btn-outline-primary px-4">Edit Book</a>
+                <a href="{% url 'books:delete' book.slug %}" class="btn btn-danger px-4">Delete Book</a>
             </div>
         </div>
     </div>

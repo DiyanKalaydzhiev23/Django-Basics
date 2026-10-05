@@ -1,0 +1,20 @@
+{% extends 'common/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4">Create Book</h1>
+        <form method="post" class="mt-4" enctype="multipart/form-data">
+            {% csrf_token %}
+{#            {% for field in form %}#}
+{#                <div class="form-group mb-4">#}
+{#                    {{ field.label_tag }}#}
+{#                    {{ field }}#}
+{#                    {{ field.errors }}#}
+{#                </div>#}
+{#            {% endfor %}#}
+            {{ form|crispy }}
+            <button class="btn btn-primary">Create</button>
+        </form>
+    </div>
+{% endblock %}

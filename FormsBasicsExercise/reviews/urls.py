@@ -1,5 +1,3 @@
-
-
 from django.urls import path, include
 from reviews import views
 

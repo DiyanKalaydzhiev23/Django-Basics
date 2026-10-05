@@ -1,0 +1,136 @@
+/* Styles for Django-rendered forms ({{ form }}, {{ field }}, ...) without touching the templates' form syntax */
+
+form[method="post"] {
+    max-width: 720px;
+    padding: 2rem;
+    background: #fff;
+    border: 1px solid #e3e6ea;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+form[method="post"] label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+form[method="post"] input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+form[method="post"] select,
+form[method="post"] textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+form[method="post"] textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+form[method="post"] select {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+form[method="post"] input:focus,
+form[method="post"] select:focus,
+form[method="post"] textarea:focus {
+    outline: 0;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+form[method="post"] input:disabled,
+form[method="post"] select:disabled,
+form[method="post"] textarea:disabled {
+    background-color: #f1f3f5;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Single checkbox (e.g. is_spoiler): put label and box on one line */
+form[method="post"] .form-group:has(> input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+form[method="post"] .form-group:has(> input[type="checkbox"]) > label {
+    margin-bottom: 0;
+    order: 2;
+}
+
+form[method="post"] input[type="checkbox"],
+form[method="post"] input[type="radio"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: #0d6efd;
+    cursor: pointer;
+}
+
+/* CheckboxSelectMultiple (e.g. tags): render options as pills */
+form[method="post"] .form-group > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+form[method="post"] .form-group > div > div > label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.35rem 0.85rem;
+    font-weight: 500;
+    border: 1px solid #ced4da;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+form[method="post"] .form-group > div > div > label:has(input:checked) {
+    background-color: #e7f1ff;
+    border-color: #0d6efd;
+    color: #0a58ca;
+}
+
+/* Validation errors */
+form[method="post"] .errorlist {
+    margin: 0.4rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: #dc3545;
+}
+
+form[method="post"] .form-group:has(.errorlist) input,
+form[method="post"] .form-group:has(.errorlist) select,
+form[method="post"] .form-group:has(.errorlist) textarea {
+    border-color: #dc3545;
+}
+
+form[method="post"] .helptext {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+form[method="post"] button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+}

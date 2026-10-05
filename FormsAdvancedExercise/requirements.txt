@@ -1,0 +1,7 @@
+asgiref==3.12.1
+crispy-bootstrap5==2026.9
+Django==5.2.17
+django-crispy-forms==2.7
+pillow==12.3.0
+psycopg2-binary==2.9.13
+sqlparse==0.6.0

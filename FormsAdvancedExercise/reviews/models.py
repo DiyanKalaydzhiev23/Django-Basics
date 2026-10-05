@@ -1,0 +1,28 @@
+from django.db import models
+
+
+class Review(models.Model):
+    author = models.CharField(
+        max_length=100,
+    )
+
+    body = models.TextField(
+        null=True,
+        blank=True,
+    )
+
+    rating = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+    )
+
+    book = models.ForeignKey(
+        "books.Book",
+        on_delete=models.CASCADE,
+        related_name="reviews",
+    )
+
+    is_spoiler = models.BooleanField(
+        default=False,
+    )
+

@@ -1,0 +1,25 @@
+{% extends 'common/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4">Bulk Edit Book reviews</h1>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+{#            {{ formset }}#}
+            {{ formset.management_form }}
+            {% if formset.non_form_errors %}
+                {{ formset.non_form_errors }}
+            {% endif %}
+        
+            {% for form in formset %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        {{ form|crispy }}
+                    </div>
+                </div>
+            {% endfor %}
+            <button class="btn btn-primary">Save all</button>
+        </form>
+    </div>
+{% endblock %}
