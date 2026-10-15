@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelers | Travel Explorer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #0d6efd 0%, #20c997 100%);
+            color: #fff;
+        }
+        .avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: #e7f1ff;
+            color: #0d6efd;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" href="{% url 'home' %}">Travel Explorer</a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary btn-sm" href="{% url 'review_list' %}">All reviews</a>
+                <a class="btn btn-outline-primary btn-sm" href="{% url 'traveler-create' %}">+ New traveler</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero py-5 mb-4">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-2">Travelers</h1>
+            <span class="opacity-75">
+                {% if page_obj %}{{ page_obj.paginator.count }}{% else %}{{ object_list|length }}{% endif %} registered traveler{% if page_obj %}{{ page_obj.paginator.count|pluralize }}{% else %}{{ object_list|length|pluralize }}{% endif %}
+            </span>
+        </div>
+    </header>
+
+    <main class="container pb-5">
+
+        <!-- Travelers -->
+        <div class="row g-4">
+            {% for traveler in object_list %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="avatar">{{ traveler.name|slice:":1" }}</div>
+                                <div class="flex-grow-1 text-truncate">
+                                    <a class="h6 fw-semibold text-decoration-none mb-0" href="{% url 'traveler-detail' traveler.pk %}">{{ traveler.name }}</a>
+                                    <div class="small text-muted">{{ traveler.get_country_display }}</div>
+                                </div>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ traveler.age }} y/o</span>
+                            </div>
+
+                            <ul class="list-unstyled small mb-3 flex-grow-1">
+                                <li class="d-flex justify-content-between gap-3 py-1 border-bottom">
+                                    <span class="text-muted">Email</span>
+                                    <a class="text-truncate" href="mailto:{{ traveler.email }}">{{ traveler.email }}</a>
+                                </li>
+                                <li class="d-flex justify-content-between gap-3 py-1">
+                                    <span class="text-muted">Member since</span>
+                                    <span>{{ traveler.registered_at|date:"M j, Y" }}</span>
+                                </li>
+                            </ul>
+
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-primary btn-sm flex-grow-1" href="{% url 'traveler-detail' traveler.pk %}">View profile</a>
+                                <a class="btn btn-outline-secondary btn-sm" href="{% url 'traveler-update' traveler.pk %}">Edit</a>
+                                <a class="btn btn-outline-danger btn-sm" href="{% url 'traveler-delete' traveler.pk %}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-4 text-muted">
+                            No travelers yet. <a href="{% url 'traveler-create' %}">Add the first one</a>.
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <nav class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-4" aria-label="Travelers pagination">
+                <small class="text-muted">
+                    Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }} traveler{{ page_obj.paginator.count|pluralize }}
+                </small>
+
+                <ul class="pagination mb-0 shadow-sm">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">&laquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">&lsaquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        <li class="page-item disabled"><span class="page-link">&lsaquo;</span></li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num == page_obj.number %}
+                            <li class="page-item active" aria-current="page"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+                            <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">&rsaquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">&raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">&rsaquo;</span></li>
+                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    </main>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
